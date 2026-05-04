@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart — Cuddle Cove</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* OVERRIDES & CART SPECIFIC STYLES */
+    body {
+      background-color: #f0f7f6; /* Soft minty white background */
+      color: #333;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    #navbar {
+      background: #1e988a !important;
+      padding: 12px 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-link { color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 15px; color: #fff; }
+    .nav-icon-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+    
+    .logo-bear { background: #f9c6d0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+    .cart-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .cart-header {
+      margin-bottom: 30px;
+    }
+    .cart-header h1 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: #000;
+      margin-bottom: 2px;
+    }
+    .cart-header p {
+      color: #333;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 25px;
+    }
+
+    /* Left Side */
+    .cart-items-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .cart-item-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      position: relative;
+    }
+    .item-img-box {
+      width: 150px;
+      height: 150px;
+      background: #fdfdfd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .item-img-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .item-details {
+      flex: 1;
+      padding-top: 5px;
+    }
+    .item-name {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    .item-subtext {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .item-price {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #000;
+      margin-bottom: 15px;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qty-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: #8e8e8e;
+      color: #fff;
+      border: none;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .qty-num {
+      background: #eef1f0;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .remove-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      color: #ff4d4d;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .shipping-progress-container {
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+    .shipping-text {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    .progress-bar-bg {
+      height: 10px;
+      background: #e0ecea;
+      border-radius: 5px;
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #4b8b86;
+      border-radius: 5px;
+      width: 70%;
+      transition: width 0.3s ease;
+    }
+    .progress-label-right {
+      position: absolute;
+      right: 0;
+      top: 15px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .coupon-section {
+      margin-top: 15px;
+    }
+    .coupon-section h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+    .coupon-box {
+      display: flex;
+      background: #fff;
+      border: 1px solid #ddd;
+      max-width: 400px;
+    }
+    .coupon-box input {
+      flex: 1; border: none; padding: 8px 15px; outline: none; font-size: 0.85rem;
+    }
+    .coupon-box button {
+      background: #1e988a; color: #fff; border: none; padding: 0 15px; font-weight: 600; cursor: pointer; text-transform: lowercase;
+    }
+
+    /* Right Side */
+    .price-details-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .price-details-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .price-row.discount-green { color: #2ecc71; }
+    .price-row.total {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+
+    .savings-card {
+      background: #fff8eb;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .savings-card .yay { font-weight: 700; font-size: 1.1rem; color: #000; margin-bottom: 5px; }
+    .savings-card .amount { font-size: 2.5rem; font-weight: 900; color: #000; }
+    .savings-card .sub { font-size: 0.85rem; font-weight: 600; color: #333; }
+
+    .checkout-btn {
+      width: 100%;
+      background: #1e988a;
+      color: #fff;
+      padding: 15px;
+      border-radius: 99px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 40px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .checkout-btn:hover { background: #1a8579; }
+
+    /* Footer tweaks */
+    .site-footer { background: #8cd4cd !important; padding: 40px 20px 20px !important; margin-top: 80px; }
+    .footer-col h4 { font-family: 'Quicksand', sans-serif; font-weight: 700; color: #000 !important; margin-bottom: 15px; }
+    .footer-col ul li a { color: #333 !important; font-size: 0.85rem !important; text-decoration: none; }
+    .footer-col p { color: #333 !important; font-size: 0.85rem !important; }
+    .newsletter-box { display: flex; background: #fff; border-radius: 30px; overflow: hidden; padding: 2px; border: 1px solid #ccc; max-width: 300px; }
+    .newsletter-box input { flex: 1; border: none; padding: 8px 15px; outline: none; }
+    .newsletter-box button { background: none; border: none; padding: 0 15px; cursor: pointer; color: #1e988a; font-size: 1.1rem; }
+    
+    .social-icons { display: flex; gap: 15px; margin-top: 15px; font-size: 1.2rem; color: #333; }
+
+    @media (max-width: 850px) {
+      .cart-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      alert('You must be signed in to view your cart.');
+      window.location.href = 'sign_in.html';
+    }
+  </script>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-icon-btn"><i class="fas fa-search"></i></button>
+        <button class="nav-icon-btn"><i class="fas fa-heart"></i></button>
+        <a id="user-nav-link" href="user_profile.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a href="payment_cart.html" class="nav-icon-btn active"><i class="fas fa-shopping-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('user-nav-link').href = 'user_profile.html';
+      } else {
+        document.getElementById('user-nav-link').href = 'sign_in.html';
+      }
+    });
+  </script>
+
+  <main class="cart-container">
+    <div class="cart-header">
+      <h1>Your Cart</h1>
+      <p>Review your cuddly picks and get ready to checkout 💗</p>
+    </div>
+
+    <div class="cart-layout">
+      <!-- LEFT SIDE -->
+      <div class="cart-items-section">
+        
+        <div id="cart-items-list">
+          <!-- Items will be injected here -->
+        </div>
+
+        <!-- SHIPPING PROGRESS -->
+        <div class="shipping-progress-container">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+            <div class="shipping-text" id="shipping-message" style="margin-bottom: 0;">Add ₹54 more to get FREE shipping! 🚚</div>
+            <a href="../SOFT TOYS/cuddle-cove/category.html" style="color: #666; font-size: 0.85rem; font-weight: 700; text-decoration: none;">add more items</a>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="shipping-progress" style="width: 90%;"></div>
+            <div class="progress-label-right" id="shipping-threshold-label">₹2000</div>
+          </div>
+        </div>
+
+        <!-- COUPON -->
+        <div class="coupon-section">
+          <h3>Apply Coupon</h3>
+          <div class="coupon-box">
+            <input type="text" placeholder="enter coupon code">
+            <button>apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="cart-summary-section">
+        
+        <!-- PRICE DETAILS -->
+        <div class="price-details-card">
+          <h3>Price Details</h3>
+          <div class="price-row">
+            <span id="subtotal-items-label">Subtotal (3 items)</span>
+            <span id="subtotal-val">₹1,946</span>
+          </div>
+          <div class="price-row discount-green">
+            <span>Discount</span>
+            <span id="discount-val">-₹448</span>
+          </div>
+          <div class="price-row">
+            <span>Shipping</span>
+            <span id="shipping-val">₹0</span>
+          </div>
+          <div class="price-row total">
+            <span>Total Amount</span>
+            <span id="total-val">₹1,498</span>
+          </div>
+          <p style="font-size: 0.7rem; color: #888; margin-top: 5px;">(Incl. of all taxes)</p>
+        </div>
+
+        <!-- SAVINGS -->
+        <div class="savings-card">
+          <div class="yay">Yay! You saved</div>
+          <div class="amount" id="saved-val">₹448 <span style="font-size: 1.8rem">🥳</span></div>
+          <div class="sub">on this order</div>
+        </div>
+
+        <!-- CHECKOUT -->
+        <button class="checkout-btn" onclick="window.location.href='billing.html'">
+          PROCEED TO CHECKOUT &nbsp; &mdash;&gt;
+        </button>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+          <li><a href="#">Customer Reviews</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Shipping & Delivery</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4 style="font-size: 0.75rem; letter-spacing: 1px; color: #333 !important;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div class="newsletter-box">
+          <input type="text">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div style="margin-top: 30px;">
+          <p style="font-weight: 800; font-size: 0.75rem; margin-bottom: 10px; color: #333;">FIND US ON</p>
+          <div class="social-icons">
+            <i class="fab fa-youtube"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-linkedin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // CART DATA
+    let defaultItems = [
+      {
+        id: "penguin",
+        name: "Penguin Plush Toy",
+        subtext: "Soft, cuddly & perfect for hugs",
+        price: 448,
+        qty: 1,
+        img: "images/penguin_strawberry.png"
+      },
+      {
+        id: "ribbonteddy",
+        name: "teddy bear plush",
+        subtext: "Classic teddy with a soft bow",
+        price: 899,
+        qty: 1,
+        img: "images/teddy_bear_bow.png"
+      },
+      {
+        id: "caterpillar",
+        name: "mini octopus plush set",
+        subtext: "Reversible • Cute • Colorful",
+        price: 599,
+        qty: 1,
+        img: "images/octopus_reversible.png"
+      }
+    ];
+
+    let items = JSON.parse(localStorage.getItem('cuddleCart')) || defaultItems;
+
+    const THRESHOLD = 2000;
+    const DISCOUNT_VAL = 448;
+
+    function render() {
+      // Save current state
+      localStorage.setItem('cuddleCart', JSON.stringify(items));
+
+      const list = document.getElementById('cart-items-list');
+      list.innerHTML = '';
+      
+      let subtotal = 0;
+      let totalQty = 0;
+
+      items.forEach(item => {
+        subtotal += item.price * item.qty;
+        totalQty += item.qty;
+
+        // Path fix: if the path starts with ../../jury/ (from product_description), remove it
+        let displayImg = item.img.replace('../../jury/', '');
+
+        const el = document.createElement('div');
+        el.className = 'cart-item-card';
+        el.innerHTML = `
+          <div class="item-img-box" style="cursor: pointer;" onclick="window.location.href='../SOFT TOYS/cuddle-cove/product_description.html?id=${item.id}'">
+            <img src="${displayImg}" alt="${item.name}">
+          </div>
+          <div class="item-details">
+            <h2 class="item-name" style="cursor: pointer;" onclick="window.location.href='../SOFT TOYS/cuddle-cove/product_description.html?id=${item.id}'">${item.name}</h2>
+            <p class="item-subtext">${item.subtext}</p>
+            <p class="item-price">₹${item.price.toLocaleString()}</p>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+            </div>
+          </div>
+          <div class="remove-btn" onclick="remove('${item.id}')">Remove</div>
+        `;
+        list.appendChild(el);
+      });
+
+      // Updates
+      document.getElementById('subtotal-items-label').innerText = `Subtotal (${totalQty} items)`;
+      document.getElementById('subtotal-val').innerText = `₹${subtotal.toLocaleString()}`;
+      
+      const currentDiscount = items.length > 0 ? DISCOUNT_VAL : 0;
+      const total = Math.max(0, subtotal - currentDiscount);
+      
+      document.getElementById('discount-val').innerText = `-₹${currentDiscount.toLocaleString()}`;
+      document.getElementById('total-val').innerText = `₹${total.toLocaleString()}`;
+      document.getElementById('saved-val').innerHTML = `₹${currentDiscount.toLocaleString()} <span style="font-size: 1.8rem">🥳</span>`;
+
+      // Progress
+      const remaining = THRESHOLD - subtotal;
+      const progress = Math.min(100, (subtotal / THRESHOLD) * 100);
+      document.getElementById('shipping-progress').style.width = progress + '%';
+      
+      if (remaining > 0) {
+        document.getElementById('shipping-message').innerHTML = `Add ₹${remaining.toLocaleString()} more to get FREE shipping! 🚚`;
+      } else {
+        document.getElementById('shipping-message').innerHTML = `You've got FREE shipping! 🚚`;
+      }
+    }
+
+    function updateQty(id, d) {
+      const item = items.find(i => i.id === id);
+      if (item) {
+        item.qty += d;
+        if (item.qty < 1) item.qty = 1;
+        render();
+      }
+    }
+
+    function remove(id) {
+      items = items.filter(i => i.id !== id);
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

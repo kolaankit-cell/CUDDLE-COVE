@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuddle Cove — Soft Toys That Stay Forever</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* OVERRIDES TO MATCH THE SPECIFIC IMAGE EXACTLY */
+    #navbar {
+      background: #1e988a !important;
+      /* Teal background for navbar */
+      border-bottom: none !important;
+      padding: 15px 0 !important;
+    }
+
+    .nav-link {
+      color: #fff !important;
+      font-weight: 500 !important;
+      font-size: 15px !important;
+      text-transform: capitalize;
+    }
+
+    .nav-link::after {
+      background: #fff !important;
+    }
+
+    .nav-icon-btn {
+      color: #fff !important;
+    }
+
+    .logo-bear {
+      background: #f9c6d0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo-wordmark {
+      display: none;
+    }
+
+    /* Image just shows the logo icon */
+
+    .hero-section {
+      padding-top: 80px;
+    }
+
+    .hero-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+    }
+
+    .product-price {
+      font-size: 1.1rem;
+      color: #1e988a;
+    }
+
+    /* New Animal Section tweaks for exact match */
+    .products-section {
+      background: #e5f4ef !important;
+      /* Light mint background */
+      padding: 3rem 2rem !important;
+    }
+
+    .section-title {
+      color: #1a3a38;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* "Deal of the day" tweaks */
+    .deal-section {
+      background: #eaf3f9 !important;
+      /* Light blue-ish like image */
+      justify-content: center;
+      gap: 3rem;
+      padding: 4rem 2rem;
+    }
+
+    .deal-content {
+      color: #000 !important;
+    }
+
+    .deal-label {
+      display: none;
+    }
+
+    .deal-title {
+      color: #000 !important;
+      font-size: 1.8rem !important;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      text-transform: lowercase;
+    }
+
+    .deal-title::before {
+      content: "deal of the day";
+    }
+
+    .deal-title {
+      font-size: 0;
+    }
+
+    .deal-title::after {
+      content: "";
+      font-size: 2rem;
+    }
+
+    .deal-desc {
+      color: #333 !important;
+      font-size: 0.85rem !important;
+      max-width: 400px;
+    }
+
+    .countdown-num {
+      background: transparent !important;
+      border: none !important;
+      color: #000 !important;
+      font-size: 2.2rem !important;
+      padding: 0 !important;
+    }
+
+    .countdown-label {
+      color: #666 !important;
+      font-size: 0.8rem !important;
+      font-weight: 600;
+    }
+
+    .countdown-sep {
+      color: #000 !important;
+    }
+
+    .deal-buy-btn {
+      background: #2a8b84 !important;
+      color: #fff !important;
+      padding: 0.7rem 2rem !important;
+      font-size: 0.9rem !important;
+    }
+
+    /* Kid's choice section tweaks */
+    .kids-choice-section {
+      background: #eaf3f9 !important;
+      padding: 3rem 2rem;
+    }
+
+    .kids-tag {
+      display: none;
+    }
+
+    .kids-title {
+      color: #000;
+      font-size: 1.8rem;
+    }
+
+    .kids-desc {
+      color: #333;
+      font-size: 0.85rem;
+    }
+
+    .kids-features {
+      display: none;
+    }
+
+    .kids-img-col {
+      width: 300px;
+      height: 300px;
+      background: #fdf5f2;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kids-toy-frame {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    /* Reviews tweaks */
+    .reviews-section {
+      background: #e5f4ef !important;
+    }
+
+    .review-card {
+      background: #dff0f6 !important;
+      box-shadow: none !important;
+    }
+
+    .review-stars {
+      display: none;
+    }
+
+    /* Footer tweaks */
+    .site-footer {
+      background: #56aba6 !important;
+    }
+
+    .footer-col h4,
+    .footer-col ul li a,
+    .footer-tagline,
+    .footer-bottom p {
+      color: #fff !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="javascript:enter3DWorld()" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-icon-btn"><i class="fas fa-search"></i></button>
+        <a href="user_profile.html?tab=wishlist" class="nav-icon-btn"><i class="fas fa-heart"></i></a>
+        <a id="user-nav-link" href="sign_in.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a id="cart-nav-link" href="payment_cart.html" class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const userLink = document.getElementById('user-nav-link');
+      const cartLink = document.getElementById('cart-nav-link');
+
+      // Update User Link
+      if (isLoggedIn === 'true') {
+        userLink.href = 'user_profile.html';
+      } else {
+        userLink.href = 'sign_in.html';
+      }
+
+      // Guard Cart and Buy logic
+      const guardAuth = (e) => {
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+          e.preventDefault();
+          alert('You must be signed in to buy items. Redirecting to Sign In...');
+          window.location.href = 'sign_in.html';
+        }
+      };
+
+      cartLink.addEventListener('click', guardAuth);
+
+      // Guard all links and buttons that could lead to purchase
+      // Looking for links pointing to payment or checkout
+      document.querySelectorAll('a[href*="payment"], a[href*="billing"], a[href*="cart"], .deal-buy-btn').forEach(el => {
+        el.addEventListener('click', guardAuth);
+      });
+    });
+  </script>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="responsive-hero">
+    <!-- Provided Image for Hero -->
+    <div class="hero-container">
+      <img src="images/HERO BANNER.png" class="hero-img" alt="Cuddles That Stay Forever" />
+      <a href="../SOFT TOYS/cuddle-cove/category.html" class="hero-shop-link" title="Shop Now"></a>
+    </div>
+  </section>
+
+  <style>
+    .responsive-hero {
+      padding-top: 50px;
+      overflow: hidden;
+    }
+
+    .hero-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .hero-img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .hero-shop-link {
+      position: absolute;
+      left: 18.9%;
+      top: 78.8%;
+      width: 18.0%;
+      height: 9.9%;
+      z-index: 10;
+      display: block;
+      border-radius: 50px;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.2s;
+    }
+
+    .hero-shop-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    @media (max-width: 768px) {
+      .responsive-hero {
+        padding-top: 60px;
+      }
+
+      .hero-img {
+        height: 400px;
+        object-position: 25% center;
+      }
+
+      /* Show more of the left side (text) on mobile */
+      .hero-shop-link {
+        left: 10%;
+        width: 35%;
+        top: 80%;
+        height: 12%;
+      }
+    }
+  </style>
+
+  <!-- GIFT CARDS & SALE -->
+  <section class="gift-section" style="background:#e8f5f1; padding: 3rem 2rem;">
+    <!-- Provided Images for Buy My Gift and Big Hugs -->
+    <div class="gift-cards-row adaptive-grid">
+      <a href="../SOFT TOYS/cuddle-cove/category.html"
+        style="display: block; position: relative; border-radius: 25px; overflow: hidden; transition: transform 0.2s ease;"
+        onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <img src="images/Rectangle 9.png" style="width:100%; height:100%; display:block; object-fit: cover;"
+          alt="Cuddle Gift" />
+        <h3
+          style="position: absolute; left: 28%; top: 50%; transform: translate(-50%, -50%); font-family: 'Nunito', sans-serif; font-size: 1.8rem; font-weight: 800; color: #000; margin: 0; text-align: center; white-space: nowrap;">
+          Buy My Gift
+        </h3>
+      </a>
+      <a href="../SOFT TOYS/cuddle-cove/category.html"
+        style="display: block; position: relative; border-radius: 25px; overflow: hidden; transition: transform 0.2s ease;"
+        onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        <img src="images/Rectangle 10.png" style="width:100%; height:100%; display:block; object-fit: cover;"
+          alt="Big Hugs Sale" />
+      </a>
+    </div>
+
+    <div style="max-width:1250px;margin:2rem auto 0;">
+      <style>
+        .highfive-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #60aedd;
+          border-radius: 15px;
+          padding: 2rem 5rem;
+          overflow: hidden;
+          transition: transform 0.2s ease;
+          text-decoration: none;
+          position: relative;
+        }
+
+        .penguin-gfx {
+          width: 220px;
+          transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transform-origin: bottom center;
+          position: relative;
+          z-index: 2;
+        }
+
+        .banner-text {
+          font-family: 'Nunito', sans-serif;
+          font-size: 3rem;
+          font-weight: 900;
+          letter-spacing: 2px;
+          color: #000;
+          margin: 0;
+          white-space: nowrap;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+          z-index: 1;
+        }
+
+        .highfive-banner:hover {
+          transform: scale(1.02);
+        }
+
+        /* Make them wildly lean in and slide to the center to "CLAP" flippers */
+        .highfive-banner:hover .penguin-left {
+          transform: translateX(310px) translateY(-20px) rotate(25deg);
+        }
+
+        .highfive-banner:hover .penguin-right {
+          transform: translateX(-310px) translateY(-20px) rotate(-25deg);
+        }
+
+        /* Fade text smoothly to the background so they can high-five over it */
+        .highfive-banner:hover .banner-text {
+          opacity: 0.1;
+          transform: translate(-50%, -50%) scale(0.9);
+        }
+      </style>
+      <a href="../SOFT TOYS/cuddle-cove/category.html" class="highfive-banner">
+        <img src="images/transparent penguine.png" alt="Penguin Left" class="penguin-gfx penguin-left" />
+        <h2 class="banner-text">NEW ARRIVAL</h2>
+        <img src="images/transparent penguine.png" alt="Penguin Right" class="penguin-gfx penguin-right" />
+      </a>
+    </div>
+  </section>
+
+  <!-- NEW ANIMAL GRID -->
+  <section class="products-section" id="new-animal">
+    <div class="section-header">
+      <h2 class="section-title">New Animal</h2>
+      <p class="section-sub">New arrival.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#fdfdfd; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'giraffe_home', 'Giraffe Plush', 725, '../SOFT TOYS/cuddle-cove/images/giraffe.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/giraffe.png" alt="Giraffe Plush" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Giraffe Plush</h4>
+          <div class="product-price">₹ 725</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#f1e6df; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'squirrel_home', 'Squirrel Plush', 699, '../SOFT TOYS/cuddle-cove/images/squirrel.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/squirrel.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Squirrel Plush</h4>
+          <div class="product-price">₹ 699</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/product_description.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#d7eee5; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'penguin_home', 'Penguin Plush', 749, '../SOFT TOYS/cuddle-cove/images/penguin.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/penguin.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Penguin Plush</h4>
+          <div class="product-price">₹ 749</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#f1ebe5; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'bear_home', 'Vee Bear Plush', 499, '../SOFT TOYS/cuddle-cove/images/bear.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/bear.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Vee Bear Plush</h4>
+          <div class="product-price">₹ 499</div>
+        </div>
+      </div>
+
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#ecebfa; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'dino_home', 'Dino Plush', 699, '../SOFT TOYS/cuddle-cove/images/dino.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/dino.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Dino Plush</h4>
+          <div class="product-price">₹ 699</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#eaf3f9; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'bird_home', 'Bird Plush', 649, '../SOFT TOYS/cuddle-cove/images/penguin.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/penguin.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;filter:hue-rotate(180deg);" /> <!-- Simulating bird -->
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Bird Plush</h4>
+          <div class="product-price">₹ 649</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#f7eee8; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'teddy_home', 'Teddy Bear Plush', 999, '../SOFT TOYS/cuddle-cove/images/bear.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/bear.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Teddy Bear Plush</h4>
+          <div class="product-price">₹ 999</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'"
+        style="cursor: pointer">
+        <div class="product-img-wrap" style="background:#fdfcfb; position:relative;">
+          <i class="far fa-heart wishlist-icon-home"
+            onclick="toggleWishlist(event, 'buddy_home', 'Buddy Bear Set', 888, '../SOFT TOYS/cuddle-cove/images/bear.png')"></i>
+          <img src="../SOFT TOYS/cuddle-cove/images/bear.png" class="product-img loaded"
+            style="object-fit:contain;padding:1rem;" />
+        </div>
+        <div class="product-info" style="text-align:center;">
+          <h4>Buddy Bear Set</h4>
+          <div class="product-price">₹ 888</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEAL OF THE DAY -->
+  <section class="deal-section">
+    <div style="background:#ecebfa;border-radius:20px;padding:2rem;">
+      <img src="../SOFT TOYS/cuddle-cove/images/dino.png" style="width:250px;" />
+    </div>
+    <div class="deal-content">
+      <h2 style="font-family:'Quicksand';font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;">deal of the day</h2>
+
+      <div class="deal-countdown">
+        <div class="countdown-unit">
+          <div class="countdown-num" id="deal-days">000</div>
+          <div class="countdown-label">d</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="deal-hours">00</div>
+          <div class="countdown-label">h</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="deal-minutes">00</div>
+          <div class="countdown-label">m</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="deal-seconds">00</div>
+          <div class="countdown-label">s</div>
+        </div>
+      </div>
+
+      <script>
+        function updateDealCountdown() {
+          // Target a far future date to artificially simulate an ongoing sale event
+          const targetDate = new Date("2028-01-01T00:00:00").getTime();
+          const now = new Date().getTime();
+          const distance = targetDate - now;
+
+          if (distance < 0) return; // Stop if the date passes
+
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          // Update DOM and pad zeroes for realistic digital clock look
+          document.getElementById('deal-days').innerText = String(days).padStart(3, '0');
+          document.getElementById('deal-hours').innerText = String(hours).padStart(2, '0');
+          document.getElementById('deal-minutes').innerText = String(minutes).padStart(2, '0');
+          document.getElementById('deal-seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        // Run instantly then loop every 1 second
+        updateDealCountdown();
+        setInterval(updateDealCountdown, 1000);
+      </script>
+
+      <p class="deal-desc" style="margin-bottom:1.5rem;line-height:1.6;">Best of the day's fresh picks<br />A
+        hand-picked mix of traditional favorites, with some new discoveries across our complete platform... All
+        carefully curated and consistently updated, making sure we have unique surprises waiting for you!</p>
+
+      <button class="deal-buy-btn" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'">SHOP
+        NOW</button>
+    </div>
+  </section>
+
+  <!-- KID'S BEST CHOICE -->
+  <section class="kids-choice-section">
+    <div class="kids-text-col">
+      <h2 class="kids-title">kid's Best Choice Toy</h2>
+      <p class="kids-desc" style="margin-top:1rem;margin-bottom:1.5rem;">Cuddle Cove Cotton Teddy Bear<br />Special
+        buddy, kids best choice a warm mix of traditional fabrics, crafted into pure snuggles and soft memories...
+        Explore the soft touch, with different styles giving the best quality.</p>
+      <button class="deal-buy-btn" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'">SHOP
+        NOW</button>
+    </div>
+    <div class="kids-img-col">
+      <img src="../SOFT TOYS/cuddle-cove/images/bear.png" style="width:200px;" />
+    </div>
+  </section>
+
+  <!-- ADVERTISEMENT BANNER -->
+  <section style="padding: 3rem 2rem; padding-bottom: 0; text-align: center;">
+    <style>
+      @keyframes gentleFlowAd {
+        0% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-12px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .flow-ad-container {
+        animation: gentleFlowAd 4s ease-in-out infinite;
+      }
+    </style>
+    <div class="flow-ad-container" style="max-width: 1250px; margin: 0 auto;">
+      <a href="../SOFT TOYS/cuddle-cove/category.html"
+        style="display: block; width: 100%; border-radius: 15px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.06);"
+        onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.1)';"
+        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.06)';">
+        <img src="images/Rectangle 24.png" style="width: 100%; display: block;" alt="Special Offer Advertisement" />
+      </a>
+    </div>
+  </section>
+
+  <!-- WHAT PEOPLE SAY -->
+  <section class="reviews-section" style="padding: 4rem 2rem;">
+    <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+      <h2 class="section-title"
+        style="font-family: 'Quicksand', sans-serif; font-size: 2.2rem; font-weight: 800; color: #000;">What People Say
+      </h2>
+    </div>
+
+    <div class="reviews-grid adaptive-review-grid">
+
+      <!-- Card 1 -->
+      <div class="review-card-fixed">
+        <p
+          style="font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 500; color: #000; line-height: 1.6; margin: 0;">
+          Super soft and adorable—my kid hasn't put it down since it arrived!
+        </p>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <img src="images/WhatsApp Image 2026-04-27 at 6.38.43 PM.jpeg" alt="Avatar 1"
+            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #cce3f0;" />
+          <div>
+            <div
+              style="font-family: 'Nunito', sans-serif; font-weight: 700; color: #000; font-size: 1.1rem; line-height: 1.2;">
+              Sunny Leone</div>
+            <div style="font-family: 'Nunito', sans-serif; font-size: 0.8rem; color: #444; margin-top: 2px;">customer id
+              CUST001</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="review-card-fixed">
+        <p
+          style="font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 500; color: #000; line-height: 1.6; margin: 0;">
+          Great quality and perfect stitching, feels premium for the price
+        </p>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <img src="images/WhatsApp Image 2026-04-27 at 6.38.44 PM.jpeg" alt="Avatar 2"
+            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #cce3f0;" />
+          <div>
+            <div
+              style="font-family: 'Nunito', sans-serif; font-weight: 700; color: #000; font-size: 1.1rem; line-height: 1.2;">
+              teddy 421</div>
+            <div style="font-family: 'Nunito', sans-serif; font-size: 0.8rem; color: #444; margin-top: 2px;">customer id
+              CUST002</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="review-card-fixed">
+        <p
+          style="font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 500; color: #000; line-height: 1.6; margin: 0;">
+          Bought it as a gift and it was an instant favorite—highly recommend!
+        </p>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <img src="images/WhatsApp Image 2026-04-27 at 6.38.45 PM.jpeg" alt="Avatar 3"
+            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #cce3f0;" />
+          <div>
+            <div
+              style="font-family: 'Nunito', sans-serif; font-weight: 700; color: #000; font-size: 1.1rem; line-height: 1.2;">
+              tanned</div>
+            <div style="font-family: 'Nunito', sans-serif; font-size: 0.8rem; color: #444; margin-top: 2px;">customer id
+              CUST010</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURED TOYS -->
+  <section class="featured-section" style="background:#e5f4ef;">
+    <div class="section-header" style="margin-bottom:2rem;">
+      <h2 class="section-title">Featured Toys</h2>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;">
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/giraffe.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Giraffe Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹725</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/dino.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Dino Plush</h4><span style="font-size:0.8rem;color:#666;">₹699</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/bear.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Buddy Bear Set</h4><span
+            style="font-size:0.8rem;color:#666;">₹888</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/squirrel.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Squirrel Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹699</span>
+        </div>
+      </div>
+
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/bear.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Red Bear Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹625</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/penguin.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Penguin Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹749</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/bear.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Teddy Bear Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹999</span>
+        </div>
+      </div>
+      <div
+        style="background:#eaf3f9;padding:0.5rem 1.5rem;border-radius:25px;display:flex;align-items:center;gap:1rem;min-width:200px;">
+        <img src="../SOFT TOYS/cuddle-cove/images/bear.png" style="width:40px;" />
+        <div>
+          <h4 style="font-size:0.85rem;margin:0;">Vee Bear Plush</h4><span
+            style="font-size:0.8rem;color:#666;">₹499</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HUGE EXPLORE IMAGE -->
+  <section style="padding: 2rem; text-align: center;">
+    <div onclick="enter3DWorld()"
+      style="cursor: pointer; display: block; position: relative; width: 100%; max-width: 1250px; margin: 0 auto; border-radius: 20px; overflow: hidden; transition: transform 0.2s ease;"
+      onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+      <img src="images/explore_wonders.png.png" style="width: 100%; display: block;"
+        alt="Explore A World Of Wonders!" />
+
+      <!-- CRAZY PORTAL BUTTON OVERLAY -->
+      <style>
+        .enter-btn-wrapper {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .portal-ring {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          transform: translate(-50%, -50%) rotate(0deg);
+          transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .enter-btn-wrapper:hover .portal-ring-1 {
+          width: 320px;
+          height: 320px;
+          opacity: 1;
+          box-shadow: 0 0 50px 15px rgba(82, 217, 219, 0.8), inset 0 0 30px 10px rgba(121, 213, 101, 0.8);
+          border: 6px dashed rgba(255, 255, 255, 0.9);
+          animation: spinPortal 5s linear infinite;
+        }
+
+        .enter-btn-wrapper:hover .portal-ring-2 {
+          width: 260px;
+          height: 260px;
+          opacity: 1;
+          box-shadow: 0 0 40px 10px rgba(253, 186, 63, 0.8), inset 0 0 20px 5px rgba(255, 107, 157, 0.8);
+          border: 4px dotted rgba(255, 255, 255, 1);
+          animation: spinPortalReverse 3.5s linear infinite;
+          transition-delay: 0.15s;
+        }
+
+        .enter-btn-wrapper:hover .portal-core {
+          width: 180px;
+          height: 180px;
+          opacity: 1;
+          background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(82, 217, 219, 0.9) 30%, rgba(0, 0, 0, 0) 70%);
+          animation: pulsePortal 1.5s ease-in-out infinite alternate;
+          transition-delay: 0.25s;
+        }
+
+        @keyframes spinPortal {
+          100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+          }
+        }
+
+        @keyframes spinPortalReverse {
+          100% {
+            transform: translate(-50%, -50%) rotate(-360deg);
+          }
+        }
+
+        @keyframes pulsePortal {
+          100% {
+            transform: translate(-50%, -50%) scale(1.25);
+            opacity: 0.7;
+          }
+        }
+
+        /* EXPLODING SPARKS CSS */
+        .spark {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: var(--w);
+          height: var(--h);
+          background: #fff;
+          border-radius: var(--br);
+          /* Layering multiple shadows creates a massive, hyper-realistic glowing bloom effect */
+          box-shadow: 0 0 5px 2px #fff,
+            0 0 15px 5px var(--c),
+            0 0 30px 10px var(--c),
+            0 0 50px 15px var(--c);
+          opacity: 0;
+          pointer-events: none;
+          mix-blend-mode: screen;
+          /* Additive lighting makes overlaps burn white hot */
+          filter: brightness(1.3);
+        }
+
+        .enter-btn-wrapper:hover .spark {
+          animation: shootSpark var(--dur) infinite cubic-bezier(0.25, 1, 0.5, 1);
+          animation-delay: var(--del);
+        }
+
+        @keyframes shootSpark {
+          0% {
+            transform: translate(-50%, -50%) rotate(var(--rot)) translateY(0px) scale(0.1);
+            opacity: 1;
+            filter: brightness(2);
+          }
+
+          100% {
+            transform: translate(-50%, -50%) rotate(var(--rot)) translateY(var(--dist)) scale(var(--sXY));
+            opacity: 0;
+            filter: brightness(1);
+          }
+        }
+
+        .enter-btn {
+          position: relative;
+          z-index: 5;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(8px);
+          padding: 1.2rem 5rem;
+          border-radius: 12px;
+          font-family: 'Nunito', sans-serif;
+          font-size: 1.8rem;
+          font-weight: 900;
+          letter-spacing: 1px;
+          color: #000;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+          transition: all 0.4s ease;
+        }
+
+        .enter-btn-wrapper:hover .enter-btn {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+          transform: scale(1.1);
+          letter-spacing: 5px;
+        }
+      </style>
+      <div class="enter-btn-wrapper">
+        <div class="portal-ring portal-ring-1"></div>
+        <div class="portal-ring portal-ring-2"></div>
+        <div class="portal-ring portal-core"></div>
+
+        <!-- MAGIC SPARKS -->
+        <div class="spark"
+          style="--rot: 12deg; --dur: 0.8s; --del: 0.1s; --w: 4px; --h: 40px; --br: 4px; --c: #ffcc00; --dist: -400px; --sXY: 1.2;">
+        </div>
+        <div class="spark"
+          style="--rot: 45deg; --dur: 1.5s; --del: 0.4s; --w: 12px; --h: 12px; --br: 50%; --c: #ff6600; --dist: -250px; --sXY: 0.5;">
+        </div>
+        <div class="spark"
+          style="--rot: 82deg; --dur: 1.1s; --del: 0.2s; --w: 2px; --h: 60px; --br: 2px; --c: #ff3300; --dist: -500px; --sXY: 1.8;">
+        </div>
+        <div class="spark"
+          style="--rot: 110deg; --dur: 1.8s; --del: 0s; --w: 18px; --h: 18px; --br: 50%; --c: #ff9933; --dist: -180px; --sXY: 0.2;">
+        </div>
+        <div class="spark"
+          style="--rot: 145deg; --dur: 0.9s; --del: 0.6s; --w: 3px; --h: 25px; --br: 3px; --c: #ffbb00; --dist: -300px; --sXY: 1.5;">
+        </div>
+        <div class="spark"
+          style="--rot: 175deg; --dur: 1.3s; --del: 0.3s; --w: 6px; --h: 18px; --br: 6px; --c: #ff6600; --dist: -350px; --sXY: 0.8;">
+        </div>
+        <div class="spark"
+          style="--rot: 200deg; --dur: 0.7s; --del: 0.8s; --w: 2px; --h: 80px; --br: 2px; --c: #ffdb4d; --dist: -600px; --sXY: 2.0;">
+        </div>
+        <div class="spark"
+          style="--rot: 235deg; --dur: 1.6s; --del: 0.1s; --w: 14px; --h: 14px; --br: 50%; --c: #ff3300; --dist: -220px; --sXY: 0.4;">
+        </div>
+        <div class="spark"
+          style="--rot: 260deg; --dur: 1.0s; --del: 0.7s; --w: 4px; --h: 30px; --br: 4px; --c: #ff9933; --dist: -450px; --sXY: 1.1;">
+        </div>
+        <div class="spark"
+          style="--rot: 295deg; --dur: 1.4s; --del: 0.2s; --w: 8px; --h: 8px; --br: 50%; --c: #ffcc00; --dist: -280px; --sXY: 0.6;">
+        </div>
+        <div class="spark"
+          style="--rot: 320deg; --dur: 0.8s; --del: 0.5s; --w: 3px; --h: 50px; --br: 3px; --c: #ff4500; --dist: -380px; --sXY: 1.4;">
+        </div>
+        <div class="spark"
+          style="--rot: 345deg; --dur: 1.2s; --del: 0.9s; --w: 16px; --h: 16px; --br: 50%; --c: #ff6600; --dist: -150px; --sXY: 0.3;">
+        </div>
+
+        <!-- EXTRA CHAOS SPARKS -->
+        <div class="spark"
+          style="--rot: 25deg; --dur: 0.6s; --del: 0.3s; --w: 2px; --h: 90px; --br: 2px; --c: #ffea00; --dist: -550px; --sXY: 2.5;">
+        </div>
+        <div class="spark"
+          style="--rot: 130deg; --dur: 1.9s; --del: 0.5s; --w: 25px; --h: 25px; --br: 50%; --c: #ff5500; --dist: -120px; --sXY: 0.1;">
+        </div>
+        <div class="spark"
+          style="--rot: 215deg; --dur: 0.85s; --del: 0s; --w: 3px; --h: 40px; --br: 3px; --c: #ff9900; --dist: -420px; --sXY: 1.3;">
+        </div>
+        <div class="spark"
+          style="--rot: 305deg; --dur: 1.35s; --del: 0.8s; --w: 10px; --h: 35px; --br: 8px; --c: #ff3300; --dist: -320px; --sXY: 0.9;">
+        </div>
+
+        <div class="enter-btn">ENTER</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTAL OVERLAY FOR 3D TRANSITION -->
+  <div id="portal-overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index:10000; opacity:0; transition: opacity 0.8s ease; pointer-events:none; display:flex; align-items:center; justify-content:center;">
+    <div style="text-align:center; font-family:'Nunito';">
+      <div class="logo-bear" style="width:80px; height:80px; margin:0 auto 20px; font-size:40px;">🧸</div>
+      <h2 style="font-weight:900; letter-spacing:2px; color: #1e988a;">ENTERING THE WONDER WORLD...</h2>
+    </div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <section class="instagram-section">
+    <div class="section-header">
+      <h2 class="section-title">Follow Instagram</h2>
+    </div>
+    <div class="instagram-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="insta-item"><img src="../SOFT TOYS/cuddle-cove/images/bear.png"
+          style="width:100%;height:100%;object-fit:cover;" /></div>
+      <div class="insta-item"><img src="../SOFT TOYS/cuddle-cove/images/dino.png"
+          style="width:100%;height:100%;object-fit:cover;" /></div>
+      <div class="insta-item"><img src="../SOFT TOYS/cuddle-cove/images/penguin.png"
+          style="width:100%;height:100%;object-fit:cover;" /></div>
+      <div class="insta-item"><img src="../SOFT TOYS/cuddle-cove/images/bear.png"
+          style="width:100%;height:100%;object-fit:cover;" /></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col" style="flex: 1.5;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+          <img src="LOGO/logo.png" alt="Logo" style="height: 45px; border-radius: 50%;">
+          <h3 style="color: #fff; font-family: 'Nunito', sans-serif; font-weight: 900; margin: 0;">CUDDLE COVE</h3>
+        </div>
+        <p style="color: #fff; font-size: 0.9rem; line-height: 1.6; opacity: 0.9;">
+          Soft toys that stay forever. Crafted with care and filled with love to create magical memories for your little
+          ones.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Our Story</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Customer Service</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Privacy Policy</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Shipping & returns</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Terms & Conditions</a></li>
+          <li style="margin-bottom:0.5rem;"><a href="#" style="font-size:0.9rem;">Secure payment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p style="font-size:0.9rem;margin-bottom:0.5rem;color:#fff;">+1 234 567 890</p>
+        <p style="font-size:0.9rem;color:#fff;">hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>Sign up for emails & get latest updates</h4>
+        <div style="display:flex;margin-top:1rem;background:#fff;border-radius:25px;overflow:hidden;padding:0.2rem;">
+          <input type="text" placeholder="" style="border:none;padding:0.5rem 1rem;flex:1;outline:none;" />
+          <button style="background:transparent;border:none;padding:0 1rem;cursor:pointer;"><i
+              class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+    <div
+      style="text-align:center;padding:1.5rem;font-size:0.9rem;color:#fff;border-top:1px solid rgba(255,255,255,0.2);">
+      We accept: <i class="fab fa-cc-visa" style="margin:0 0.5rem;font-size:1.2rem;"></i> <i
+        class="fab fa-cc-mastercard" style="margin:0 0.5rem;font-size:1.2rem;"></i> <i class="fab fa-cc-paypal"
+        style="margin:0 0.5rem;font-size:1.2rem;"></i>
+    </div>
+  </footer>
+
+  <style>
+    .wishlist-icon-home {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      color: #ccc;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .wishlist-icon-home.active {
+      color: #ff7675;
+      font-weight: 900;
+      transform: scale(1.1);
+    }
+
+    .wishlist-icon-home:hover {
+      transform: scale(1.2);
+      background: #fff;
+    }
+  </style>
+  <script>
+    function enter3DWorld() {
+      const overlay = document.getElementById('portal-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'all';
+      }, 10);
+
+      setTimeout(() => {
+        window.location.href = '3D_GAME/sample.ios/dw.html';
+      }, 1500);
+    }
+
+    function toggleWishlist(e, id, name, price, img) {
+      e.stopPropagation();
+      const icon = e.currentTarget;
+      let wishlist = JSON.parse(localStorage.getItem('cuddleWishlist')) || [];
+      const index = wishlist.findIndex(item => item.id === id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        icon.classList.remove('active', 'fas');
+        icon.classList.add('far');
+      } else {
+        wishlist.push({ id, name, price, img });
+        icon.classList.add('active', 'fas');
+        icon.classList.remove('far');
+      }
+      localStorage.setItem('cuddleWishlist', JSON.stringify(wishlist));
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      let wishlist = JSON.parse(localStorage.getItem('cuddleWishlist')) || [];
+      document.querySelectorAll('.wishlist-icon-home').forEach(icon => {
+        const id = icon.getAttribute('onclick').match(/'([^']+)'/)[1];
+        if (wishlist.some(item => item.id === id)) {
+          icon.classList.add('active', 'fas');
+          icon.classList.remove('far');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

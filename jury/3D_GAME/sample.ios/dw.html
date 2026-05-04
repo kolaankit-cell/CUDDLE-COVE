@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuddle Cove - World of Wonders (Stable)</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <!-- Realistic Atmosphere & Effects -->
+  <script src="https://unpkg.com/three@0.134.0/examples/js/objects/Sky.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://unpkg.com/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #4db8ff;
+      font-family: 'Nunito', sans-serif;
+    }
+    #threejs-canvas-container {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+    #toy-score {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 0 4px 0 #3a8e26, 0 8px 15px rgba(0,0,0,0.5);
+      z-index: 100;
+      line-height: 1.1;
+      pointer-events: none;
+      text-align: right;
+    }
+    .hud-sub {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      letter-spacing: 1px;
+    }
+    #controls-hint {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      padding: 15px 25px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      pointer-events: none;
+    }
+    .key-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin: 0 4px;
+      border-bottom: 2px solid rgba(255,255,255,0.4);
+    }
+    .floating-score {
+      position: absolute;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.3);
+      z-index: 50;
+      display: none;
+    }
+    #pause-menu {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .menu-card {
+      background: white;
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      text-align: center;
+      min-width: 300px;
+    }
+    .menu-card h2 {
+      margin: 0 0 30px 0;
+      color: #333;
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+    }
+    .menu-btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 15px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-resume { background: #5bc740; color: white; }
+    .btn-resume:hover { background: #4ca835; transform: scale(1.05); }
+    .btn-quit { background: #ff4d4d; color: white; }
+    .btn-quit:hover { background: #e63e3e; transform: scale(1.05); }
+  </style>
+</head>
+<body>
+
+<div id="threejs-canvas-container"></div>
+<div id="controls-hint">
+  🖱️ <span class="key-badge">CLICK</span> to Lock Mouse <br/>
+  🎮 <span class="key-badge">W A S D</span> / <span class="key-badge">MOUSE</span> to Turn <br/>
+  ⚡ <span class="key-badge">SHIFT</span> to Run <br/>
+  🚀 <span class="key-badge">SPACE</span> to Jump
+</div>
+<div id="player-banner" class="floating-score">⭐ ME: 0</div>
+
+<div id="pause-menu">
+  <div class="menu-card">
+    <h2>PAUSED</h2>
+    <button class="menu-btn btn-resume" onclick="resumeGame()">RESUME GAME</button>
+    <button class="menu-btn btn-quit" onclick="quitGame()">QUIT TO HOME</button>
+  </div>
+</div>
+
+<div id="toy-score" style="text-align:right;">
+  CUDDLE COVE <br/>
+  <span style="color:#ffeed0;">ADVENTURES</span><br/>
+  <div class="hud-sub" id="task1">⭐ Collect 15 Stars (0/15)</div>
+  <div class="hud-sub" id="task2">🏃 Find a Pink Maze</div>
+  <div class="hud-sub" id="task3">🎢 Ride a Playground Slide</div>
+  <div id="loading-status" style="font-size:0.8rem; color:#aaa; margin-top:10px;">📦 [Status: Pending]</div>
+  <div id="debug-log" style="font-size:0.7rem; color:#666; max-width:200px;"></div>
+</div>
+
+<script>
+  const canvasContainer = document.getElementById('threejs-canvas-container');
+  let tasks = { stars: 0, maze: false, slide: false };
+  
+  let threeRenderer, threeScene, threeCamera, threeAnimId;
+  let collidables = []; 
+
+  // ==========================================
+  // SCENE INITIALIZATION (STABLE)
+  // ==========================================
+  threeScene = new THREE.Scene();
+  threeScene.background = new THREE.Color(0x6bc4ff); 
+  threeScene.fog = new THREE.FogExp2(0x99ccff, 0.0015); // Lighter, more subtle fog
+  threeCamera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+  threeRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "default" });
+  threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  threeRenderer.shadowMap.enabled = true;
+  threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  threeRenderer.toneMappingExposure = 0.5;
+  threeRenderer.outputEncoding = THREE.sRGBEncoding;
+  canvasContainer.appendChild(threeRenderer.domElement);
+
+  // ==========================================
+  // BLOOM POST-PROCESSING (Calibrated)
+  // ==========================================
+  const renderScene = new THREE.RenderPass(threeScene, threeCamera);
+  const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+  bloomPass.threshold = 0.8; // Only very bright things glow
+  bloomPass.strength = 0.15; // Much more subtle
+  bloomPass.radius = 0.2;
+
+  const composer = new THREE.EffectComposer(threeRenderer);
+  composer.addPass(renderScene);
+  composer.addPass(bloomPass);
+
+  // ==========================================
+  // REALISTIC SKY
+  // ==========================================
+  const sky = new THREE.Sky();
+  sky.scale.setScalar(450000);
+  threeScene.add(sky);
+
+  const sunPos = new THREE.Vector3();
+  const effectController = {
+    turbidity: 0.1, // Clearer sky
+    rayleigh: 1.0, 
+    mieCoefficient: 0.005,
+    mieDirectionalG: 0.8,
+    elevation: 25, // Higher sun for better shadows
+    azimuth: 180,
+    exposure: 0.5
+  };
+
+  function updateSky() {
+    const uniforms = sky.material.uniforms;
+    uniforms['turbidity'].value = effectController.turbidity;
+    uniforms['rayleigh'].value = effectController.rayleigh;
+    uniforms['mieCoefficient'].value = effectController.mieCoefficient;
+    uniforms['mieDirectionalG'].value = effectController.mieDirectionalG;
+
+    const phi = THREE.MathUtils.degToRad(90 - effectController.elevation);
+    const theta = THREE.MathUtils.degToRad(effectController.azimuth);
+
+    sunPos.setFromSphericalCoords(1, phi, theta);
+    uniforms['sunPosition'].value.copy(sunPos);
+  }
+  updateSky();
+
+  // Lighting
+  threeScene.add(new THREE.AmbientLight(0xffffff, 0.4)); // Lower ambient for better contrast
+  
+  const sun = new THREE.DirectionalLight(0xfffaeb, 2.2); // Increased intensity
+  sun.position.set(200, 350, -150);
+  sun.castShadow = true;
+  sun.shadow.camera.left = -400; sun.shadow.camera.right = 400;
+  sun.shadow.camera.top = 400; sun.shadow.camera.bottom = -400;
+  sun.shadow.camera.near = 1; sun.shadow.camera.far = 1000;
+  sun.shadow.mapSize.width = 4096; // 4K shadows for depth
+  sun.shadow.mapSize.height = 4096;
+  sun.shadow.bias = -0.0001; 
+  threeScene.add(sun);
+  
+  threeScene.add(new THREE.HemisphereLight(0xd4e2ff, 0x2d6325, 0.4)); // Darker ground color for hemisphere light
+
+  // ==========================================
+  // PROCEDURAL DISPLACED TERRAIN
+  // ==========================================
+  const groundGeo = new THREE.PlaneGeometry(800, 800, 80, 80);
+  const pos = groundGeo.attributes.position;
+  
+  const getTerrainHeight = (x, z) => {
+    // Significantly more rugged terrain with multiple octaves of noise
+    return Math.sin(x * 0.04) * Math.cos(z * 0.04) * 12.0 + 
+           Math.sin(x * 0.08) * 4.0 + 
+           Math.cos(z * 0.12) * 2.0;
+  };
+  
+  for(let i=0; i<pos.count; i++) {
+     const x = pos.getX(i); const y = pos.getY(i);
+     pos.setZ(i, getTerrainHeight(x, y));
+  }
+  groundGeo.computeVertexNormals();
+
+  // STABLE: Reverted to StandardMaterial for realism 
+  const groundMat = new THREE.MeshStandardMaterial({ 
+    color: 0x5bc740,
+    roughness: 0.8,
+    metalness: 0.1
+  });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  threeScene.add(ground);
+
+  // ==========================================
+  // ORGANIC OCEAN / LAKES 
+  // ==========================================
+  const oceanGeo = new THREE.PlaneGeometry(1000, 1000);
+  const oceanMat = new THREE.MeshStandardMaterial({ 
+    color: 0x1db7ed, 
+    transparent: true, 
+    opacity: 0.75,
+    roughness: 0.1,
+    metalness: 0.8 
+  });
+  const ocean = new THREE.Mesh(oceanGeo, oceanMat);
+  ocean.rotation.x = -Math.PI / 2;
+  ocean.position.y = -1.2; 
+  threeScene.add(ocean);
+
+  // ==========================================
+  // INSTANCED GRASS BLADES
+  // ==========================================
+  const grassGeo = new THREE.ConeGeometry(0.15, 0.8, 4);
+  // Extremely safe count
+  const grassMat = new THREE.MeshStandardMaterial({ color: 0x47a332, roughness: 1.0, metalness: 0 }); // Darker, matte grass
+  const instancedGrass = new THREE.InstancedMesh(grassGeo, grassMat, 4000);
+  const dummy = new THREE.Object3D();
+  
+  let grassCount = 0;
+  let safeties = 0;
+  while(grassCount < 4000 && safeties < 15000) {
+    safeties++;
+    const gx = (Math.random()-0.5) * 500;
+    const gz = (Math.random()-0.5) * 500;
+    const gy = getTerrainHeight(gx, gz);
+    if(gy > -0.8) { 
+      dummy.position.set(gx, gy + 0.4, gz);
+      dummy.rotation.x = (Math.random()-0.5) * 0.4;
+      dummy.rotation.y = Math.random() * Math.PI * 2;
+      dummy.rotation.z = (Math.random()-0.5) * 0.4;
+      dummy.scale.setScalar(0.4 + Math.random() * 0.8);
+      dummy.updateMatrix();
+      instancedGrass.setMatrixAt(grassCount, dummy.matrix);
+      grassCount++;
+    }
+  }
+  threeScene.add(instancedGrass);
+
+  // ==========================================
+  // MOUNTAINS & ENVIRONMENT SCATTERING
+  // ==========================================
+  const mountainMat = new THREE.MeshStandardMaterial({ color: 0x6f7ca1, roughness: 0.9, metalness: 0.2 });
+  const snowMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.1 });
+  const purpMat = new THREE.MeshStandardMaterial({ color: 0x9e6bb0, roughness: 0.8, metalness: 0.3 });
+
+  function addMountain(x, z, h, rad, isPurple, hasSnow) {
+    const mat = isPurple ? purpMat : mountainMat;
+    const mtx = new THREE.Mesh(new THREE.ConeGeometry(rad, h, 32), mat);
+    const mHeight = getTerrainHeight(x, z);
+    mtx.position.set(x, mHeight + h/2 - 5, z); 
+    mtx.receiveShadow = true; mtx.castShadow = true;
+    threeScene.add(mtx);
+    collidables.push({ x, z, r: rad * 0.8 }); // Tighter collision constraints to stop clipping
+
+    if (hasSnow) {
+      const snowH = h * 0.35;
+      const snow = new THREE.Mesh(new THREE.ConeGeometry(rad * 0.35 + 0.5, snowH, 32), snowMat);
+      snow.position.set(x, mHeight + h - snowH/2 - 5, z);
+      threeScene.add(snow);
+    }
+  }
+
+  // Procedural mountains kept as base, but will be supplemented by imported mountain scenes later
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2;
+    const dist = 380 + Math.random() * 40;
+    const x = Math.cos(angle) * dist;
+    const z = Math.sin(angle) * dist;
+    const isPurple = Math.random() > 0.6;
+    addMountain(x, z, 70 + Math.random()*60, 45 + Math.random()*30, isPurple, !isPurple);
+  }
+
+  // ==========================================
+  // HOLLOW CAVE TUNNELS
+  // ==========================================
+  const cavesData = [];
+  function addCaveMountain(x, z, h, rad, rotY=0) {
+     const tunLength = rad * 2.3; 
+     const mHeight = getTerrainHeight(x, z);
+     
+     const tunMat = new THREE.MeshStandardMaterial({ color: 0x4d5773, side: THREE.DoubleSide, roughness: 0.7, metalness: 0.3 });
+     const tunGeo = new THREE.CylinderGeometry(7, 7, tunLength, 16, 1, true, 0, Math.PI);
+     const arch = new THREE.Mesh(tunGeo, tunMat);
+     arch.rotation.x = Math.PI / 2; 
+     
+     const archContainer = new THREE.Group();
+     archContainer.position.set(x, mHeight - 1.5, z);
+     archContainer.rotation.y = rotY;
+     archContainer.add(arch);
+     threeScene.add(archContainer);
+     
+     const floorPath = new THREE.Mesh(new THREE.BoxGeometry(14, 1.0, tunLength + 10), groundMat);
+     floorPath.position.y = 0.5;
+     archContainer.add(floorPath);
+     
+     cavesData.push({x, z, rotY, tunLength, floorHeight: mHeight - 1.0, rad: rad + 5});
+
+     // Dodecahedron Boulder Shell explicitly avoiding entrances
+     const rockGeo = new THREE.DodecahedronGeometry(1);
+     const clusters = 90;
+     for(let j=0; j<clusters; j++) {
+        const rOffset = Math.random() * rad;
+        const angle = Math.random() * Math.PI*2;
+        const yDrop = Math.cos((rOffset/rad)*Math.PI/2) * h; 
+        
+        const lx = rOffset * Math.cos(angle);
+        const lz = rOffset * Math.sin(angle);
+        if (Math.abs(lx) < 9.5 && yDrop < 11.5) continue; 
+        
+        const bMesh = new THREE.Mesh(rockGeo, mountainMat);
+        const sc = rad * (0.3 + Math.random()*0.3);
+        bMesh.scale.set(sc, sc*0.6, sc*1.1);
+        
+        const wx = x + lx * Math.cos(rotY) + lz * Math.sin(rotY);
+        const wz = z - lx * Math.sin(rotY) + lz * Math.cos(rotY);
+        bMesh.position.set(wx, mHeight + yDrop - sc*0.5, wz);
+        bMesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+        bMesh.castShadow = true; bMesh.receiveShadow = true;
+        threeScene.add(bMesh);
+     }
+
+     for(let angle = 0; angle < Math.PI * 2; angle += 0.3) {
+        let localAngle = angle - rotY;
+        while(localAngle < 0) localAngle += Math.PI*2;
+        const deg = (localAngle * 180 / Math.PI) % 360;
+        const isEntrance1 = Math.abs(deg - 90) < 30; 
+        const isEntrance2 = Math.abs(deg - 270) < 30; 
+        
+        if (!isEntrance1 && !isEntrance2) {
+           const px = x + Math.cos(angle) * (rad * 0.75); 
+           const pz = z + Math.sin(angle) * (rad * 0.75);
+           collidables.push({ x: px, z: pz, r: 3.5 });
+        }
+     }
+     
+     for(let i = -tunLength/2; i <= tunLength/2; i += 3.5) {
+        const cosY = Math.cos(rotY);
+        const sinY = Math.sin(rotY);
+        collidables.push({ x: x - 7.5 * cosY + i * sinY, z: z + 7.5 * sinY + i * cosY, r: 2.2 });
+        collidables.push({ x: x + 7.5 * cosY + i * sinY, z: z - 7.5 * sinY + i * cosY, r: 2.2 });
+     }
+
+     const e1_lz = tunLength/2 + 5;
+     const e2_lz = -tunLength/2 - 5;
+     const tGeo = new THREE.OctahedronGeometry(1.5, 0);
+     const tMat = new THREE.MeshStandardMaterial({ color: 0x55ffaa, emissive: 0x11ee88, emissiveIntensity: 0.5 });
+     
+     const makeTorch = (lx, lz) => {
+        const dx = lx * Math.cos(rotY) + lz * Math.sin(rotY);
+        const dz = -lx * Math.sin(rotY) + lz * Math.cos(rotY);
+        const t = new THREE.Mesh(tGeo, tMat);
+        t.position.set(x + dx, mHeight + 2.0, z + dz);
+        threeScene.add(t);
+     };
+     makeTorch(-9, e1_lz); makeTorch(9, e1_lz);
+     makeTorch(-9, e2_lz); makeTorch(9, e2_lz);
+  }
+
+  for(let i=0; i<3; i++) {
+     const cx = (Math.random()-0.5)*250;
+     const cz = (Math.random()-0.5)*250;
+     addCaveMountain(cx, cz, 40 + Math.random()*20, 25 + Math.random()*10, Math.random()*Math.PI);
+  }
+
+  // ==========================================
+  // 3D ASSETS LOADING SYSTEM (REFACTORED)
+  // ==========================================
+  const gltfLoader = new THREE.GLTFLoader();
+  const modelAssets = { trees: [], rocks: [], mountains: [] };
+
+  async function loadEnvironmentAssets() {
+    const assetUrls = [
+      '../3D%20ASSETS/stylized_aumtumn_trees_pack_animation_baked.glb',
+      '../3D%20ASSETS/low_poly_rocks_and_trees.glb',
+      '../3D%20ASSETS/pine_trees_pack__ps1_low_poly.glb',
+      '../3D%20ASSETS/mountain_scene.glb',
+      '../3D%20ASSETS/lowpoly_flower_bushes.glb'
+    ];
+
+    let hasInitiallySpawned = false;
+    const spawnOnce = () => {
+      if (!hasInitiallySpawned) {
+        hasInitiallySpawned = true;
+        document.getElementById('loading-status').innerHTML = "✅ World Initialized!";
+        setTimeout(() => document.getElementById('loading-status').style.display = 'none', 3000);
+        initEnvironment();
+      }
+    };
+
+    // Safety timeout: if loading takes too long, just spawn with what we have
+    const loadTimeout = setTimeout(() => {
+      console.warn("Asset loading timed out. Spawning with available assets.");
+      spawnOnce();
+    }, 8000);
+
+    const debugLog = (msg) => {
+      document.getElementById('debug-log').innerHTML = msg;
+    };
+
+    for (const url of assetUrls) {
+      try {
+        debugLog(`Fetching ${url.split('/').pop()}...`);
+        const gltf = await new Promise((resolve, reject) => {
+          gltfLoader.load(url, resolve, undefined, (e) => reject(new Error(`Load Error: ${url}`)));
+        });
+
+        gltf.scene.traverse(child => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            child.geometry.computeVertexNormals();
+            if (child.material) {
+              child.material.roughness = 0.8;
+              child.material.metalness = 0.1;
+            }
+            
+            const name = child.name.toLowerCase();
+            const lowerUrl = url.toLowerCase();
+            
+            if (lowerUrl.includes('aumtumn') || lowerUrl.includes('tree') || lowerUrl.includes('pine') || name.includes('tree') || name.includes('leaf')) {
+              modelAssets.trees.push(child);
+            } else if (name.includes('mountain') || name.includes('peak') || name.includes('hill') || lowerUrl.includes('mountain')) {
+              modelAssets.mountains.push(child);
+            } else if (name.includes('rock') || name.includes('stone') || name.includes('boulder') || name.includes('cliff') || name.includes('ore')) {
+              modelAssets.rocks.push(child);
+            } else {
+              modelAssets.trees.push(child);
+            }
+          }
+        });
+        debugLog(`Success: ${url.split('/').pop()} (${modelAssets.trees.length} trees)`);
+      } catch (err) {
+        debugLog(`Fail: ${url.split('/').pop()}`);
+        console.error(err);
+      }
+    }
+
+    clearTimeout(loadTimeout);
+    spawnOnce();
+  }
+
+  // Broadleaf Trees logic kept same but ensured robustness
+  const leafMat = new THREE.MeshStandardMaterial({ color: 0x4cbd33, roughness: 0.8, metalness: 0.1 });
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4f3a, roughness: 0.9, metalness: 0.05 });
+
+  function addTree(x, baseY, z, scale = 1) {
+    if (modelAssets.trees.length > 0) {
+      const tree = modelAssets.trees[Math.floor(Math.random() * modelAssets.trees.length)].clone();
+      tree.position.set(x, baseY, z);
+      tree.scale.setScalar(scale * 15.0); // MASSIVELY increased scale for visibility
+      tree.rotation.y = Math.random() * Math.PI * 2;
+      // Straighten them out
+      tree.rotation.x = (Math.random() - 0.5) * 0.1;
+      tree.rotation.z = (Math.random() - 0.5) * 0.1;
+      threeScene.add(tree);
+    } else {
+      // Fallback Primitives
+      const tGroup = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 4), trunkMat);
+      trunk.position.y = 2; trunk.castShadow = true;
+      const leaves = new THREE.Mesh(new THREE.SphereGeometry(2.5, 12, 12), leafMat);
+      leaves.position.y = 5; leaves.castShadow = true;
+      tGroup.add(trunk, leaves);
+      tGroup.position.set(x, baseY, z);
+      tGroup.scale.setScalar(scale * 1.5);
+      threeScene.add(tGroup);
+    }
+    collidables.push({ x: x, z: z, r: 1.5 * scale });
+  }
+
+  // Floating Islands
+  function addFloatingIsland(x, y, z, r) {
+     const baseMat = new THREE.MeshStandardMaterial({ color: 0x6f7ca1, roughness: 0.9, metalness: 0.2 });
+     const base = new THREE.Mesh(new THREE.ConeGeometry(r, r*1.3, 8), baseMat);
+    base.rotation.x = Math.PI; base.position.set(x, y, z); base.castShadow = true;
+    threeScene.add(base);
+
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(r*0.95, r, r*0.3, 16), groundMat);
+    top.position.set(x, y + r*0.65, z); top.castShadow = true; top.receiveShadow = true;
+    threeScene.add(top);
+    addTree(x, y + r*0.8, z, r*0.12);
+  }
+  const canPlace = (x, z, r, ignoreCollidables = false) => {
+    if (isNearCave(x, z)) return false;
+    if (!ignoreCollidables) {
+        for(let c of collidables) {
+           const d = Math.hypot(x - c.x, z - c.z);
+           // Relaxed check: allow some overlap by reducing effective radius check
+           if (d < (r + c.r) * 0.4) return false; 
+        }
+    }
+    return true;
+  };
+
+  function initEnvironment() {
+    // SCATTER MOUNTAINS (The "Backdrop")
+    if (modelAssets.mountains && modelAssets.mountains.length > 0) {
+      for (let i = 0; i < 20; i++) { // Increased count
+        const angle = (i / 20) * Math.PI * 2 + Math.random();
+        const dist = 300 + Math.random() * 100;
+        const x = Math.cos(angle) * dist;
+        const z = Math.sin(angle) * dist;
+        const mnt = modelAssets.mountains[Math.floor(Math.random()*modelAssets.mountains.length)].clone();
+        mnt.position.set(x, -2, z);
+        mnt.scale.setScalar(40 + Math.random() * 60); // Much larger for visibility
+        mnt.rotation.y = Math.random() * Math.PI * 2;
+        threeScene.add(mnt);
+        collidables.push({ x, z, r: 15 }); 
+      }
+    }
+
+    // SCATTER TREES (ULTRA MASSIVE QUANTITY)
+    let treeGoal = 800; 
+    let treeCount = 0;
+    let treeSafety = 0;
+    while (treeCount < treeGoal && treeSafety < 5000) {
+      treeSafety++;
+      const tx = (Math.random() - 0.5) * 900;
+      const tz = (Math.random() - 0.5) * 900;
+      if (canPlace(tx, tz, 0.5)) { 
+        const ty = getTerrainHeight(tx, tz);
+        if (ty > -1.5 && (Math.abs(tx) > 10 || Math.abs(tz) > 10)) { 
+          addTree(tx, ty, tz, 1.2 + Math.random() * 2.0);
+          treeCount++;
+        }
+      }
+    }
+
+    // SCATTER ROCKS (MASSIVE QUANTITY)
+    let rockGoal = 350;
+    let rockCount = 0;
+    let rockSafety = 0;
+    while (rockCount < rockGoal && rockSafety < 4000) {
+      rockSafety++;
+      const rx = (Math.random() - 0.5) * 900;
+      const rz = (Math.random() - 0.5) * 900;
+      const rxRadius = 1.0;
+      if (canPlace(rx, rz, rxRadius)) {
+        const ry = getTerrainHeight(rx, rz);
+        if(ry > -1.5) {
+          let sc = 0.5 + Math.random() * 2.0;
+          if (modelAssets.rocks.length > 0) {
+            const rock = modelAssets.rocks[Math.floor(Math.random() * modelAssets.rocks.length)].clone();
+            rock.position.set(rx, ry, rz);
+            rock.scale.setScalar(sc * 5.0); 
+            rock.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+            threeScene.add(rock);
+          } else {
+            const rockGeo = new THREE.DodecahedronGeometry(1);
+            const rock = new THREE.Mesh(rockGeo, mountainMat);
+            rock.scale.set(sc*2, sc, sc*2);
+            rock.position.set(rx, ry, rz);
+            rock.castShadow = true;
+            threeScene.add(rock);
+          }
+          collidables.push({ x: rx, z: rz, r: sc * 0.8 }); 
+          rockCount++;
+        }
+      }
+    }
+
+    // Floating Islands
+    for(let i=0; i<12; i++) {
+      const x = (Math.random()-0.5)*500;
+      const z = (Math.random()-0.5)*500;
+      if (canPlace(x, z, 20, true)) {
+        addFloatingIsland(x, 70 + Math.random()*100, z, 15 + Math.random()*20);
+      }
+    }
+  }
+
+  // Load and then Init
+  loadEnvironmentAssets();
+
+  // ==========================================
+  // PLAYGROUND SLIDES & PUZZLE MAZES
+  // ==========================================
+  let slidesData = [];
+  
+  function addSlide(x, z, rotY=0) {
+    const slGroup = new THREE.Group();
+    const matYellow = new THREE.MeshStandardMaterial({ color: 0xffd04f, roughness: 0.4, metalness: 0.3 });
+    const matRed = new THREE.MeshStandardMaterial({ color: 0xff4f4f, roughness: 0.4, metalness: 0.3 });
+    const matBlue = new THREE.MeshStandardMaterial({ color: 0x4f8aff, roughness: 0.4, metalness: 0.3 });
+    
+    // Ladder
+    const postGeo = new THREE.CylinderGeometry(0.1, 0.1, 3.2);
+    const post1 = new THREE.Mesh(postGeo, matYellow); post1.position.set(-0.5, 1.6, -2);
+    const post2 = new THREE.Mesh(postGeo, matYellow); post2.position.set(0.5, 1.6, -2);
+    slGroup.add(post1, post2);
+    for(let i=1; i<=4; i++) {
+       const step = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1), matRed);
+       step.rotation.z = Math.PI/2;
+       step.position.set(0, i*0.7, -2);
+       slGroup.add(step);
+    }
+    // Platform
+    const plat = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), matBlue);
+    plat.position.set(0, 3.1, -1.4);
+    slGroup.add(plat);
+    // Slide ramp
+    const rampGroup = new THREE.Group();
+    rampGroup.position.set(0, 3.1, -0.8); // Anchor cleanly at the front lip
+    const ramp = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.1, 7.0), matRed);
+    ramp.position.set(0, 0, 3.5); // shift forward
+    rampGroup.add(ramp);
+    rampGroup.rotation.x = Math.PI/6; // Slant down gently
+    slGroup.add(rampGroup);
+    
+    slGroup.children.forEach(c => { c.castShadow=true; c.receiveShadow=true; });
+    const baseH = getTerrainHeight(x, z);
+    slGroup.position.set(x, baseH, z);
+    slGroup.rotation.y = rotY;
+    threeScene.add(slGroup);
+    
+    slidesData.push({x, z, rotY, y: baseH});
+  }
+
+  let onRampSlide = null;
+  function getSlideHeight(px, pz) {
+     let highestY = -Infinity;
+     onRampSlide = null;
+     for(let i=0; i<slidesData.length; i++) {
+        const s = slidesData[i];
+        const dx = px - s.x;
+        const dz = pz - s.z;
+        // Inverse coordinate transformation (World to Local)
+        const cosY = Math.cos(-s.rotY);
+        const sinY = Math.sin(-s.rotY);
+        const lx = dx * cosY + dz * sinY;
+        const lz = -dx * sinY + dz * cosY;
+        
+        // Ladder Ramp (Approaching from back)
+        if (lx >= -0.7 && lx <= 0.7 && lz >= -2.6 && lz <= -1.7) {
+           const ratio = (lz + 2.6) / 0.9;
+           highestY = Math.max(highestY, ratio * 3.2 + s.y);
+        }
+        // Platform Center
+        else if (lx >= -0.7 && lx <= 0.7 && lz > -1.7 && lz <= -0.8) {
+           highestY = Math.max(highestY, 3.2 + s.y);
+        }
+        // Slide Ramp Flow (down to +5.2)
+        else if (lx >= -0.6 && lx <= 0.6 && lz > -0.8 && lz <= 5.2) {
+           const ratio = (lz + 0.8) / 6.0;
+           highestY = Math.max(highestY, 3.2 - (ratio * 3.5) + s.y);
+           if (ratio > 0.05 && ratio < 0.95) onRampSlide = s; 
+        }
+     }
+     return highestY;
+  }
+
+  for(let i=0; i<8; i++) {
+     addSlide((Math.random()-0.5)*350, (Math.random()-0.5)*350, Math.random()*Math.PI);
+  }
+
+  const mazesData = [];
+  function addMaze(cx, cz) {
+     mazesData.push({x: cx, z: cz});
+     const wallMat = new THREE.MeshStandardMaterial({ color: 0xee5588, roughness: 0.8, metalness: 0.1 }); // pink maze
+     const baseH = getTerrainHeight(cx, cz);
+     const wallGeo = new THREE.BoxGeometry(4, 4, 4);
+     
+     const mazeDef = [
+       "XXXXX",
+       "X   X",
+       "X X X",
+       "X   X",
+       "XX XX"
+     ];
+     for(let r=0; r<5; r++) {
+       for(let c=0; c<5; c++) {
+         if (mazeDef[r][c] === 'X') {
+           const wx = cx + (c-2)*4;
+           const wz = cz + (r-2)*4;
+           const wall = new THREE.Mesh(wallGeo, wallMat);
+           wall.position.set(wx, baseH + 1, wz);
+           wall.castShadow = true; wall.receiveShadow = true;
+           threeScene.add(wall);
+           collidables.push({x: wx, z: wz, r: 2.2}); 
+         }
+       }
+     }
+  }
+  
+  for(let i=0; i<6; i++) {
+     addMaze((Math.random()-0.5)*400, (Math.random()-0.5)*400);
+  }
+
+  // ==========================================
+  // CUTE TEDDY BEAR
+  // ==========================================
+  const toyGroup = new THREE.Group();
+  
+  const toyMat = new THREE.MeshStandardMaterial({ color: 0xf5cca0, roughness: 0.9, metalness: 0.1 }); 
+  const toyMesh = new THREE.Group(); 
+  toyMesh.rotation.y = Math.PI; // Face away from camera perfectly!
+  
+  const head = new THREE.Mesh(new THREE.SphereGeometry(1.0, 32, 32), toyMat);
+  head.castShadow = true; head.position.y = 0.5; toyMesh.add(head);
+  
+  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.1, metalness: 0.9 });
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), eyeMat);
+  eyeL.position.set(-0.35, 0.6, 0.9);
+  const eyeR = eyeL.clone(); eyeR.position.set(0.35, 0.6, 0.9);
+  toyMesh.add(eyeL, eyeR);
+
+  const snout = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffe6c2, roughness: 1 }));
+  snout.scale.set(1, 0.75, 1); snout.position.set(0, 0.35, 0.95); toyMesh.add(snout);
+  
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), eyeMat);
+  nose.position.set(0, 0.45, 1.28); toyMesh.add(nose);
+
+  const earGeo = new THREE.SphereGeometry(0.35, 16, 16); earGeo.scale(1, 1, 0.4);
+  const earL = new THREE.Mesh(earGeo, toyMat); earL.position.set(-0.7, 1.1, 0.4); earL.rotation.y = -Math.PI / 8;
+  const earR = earL.clone(); earR.position.set(0.7, 1.1, 0.4); earR.rotation.y = Math.PI / 8;
+  toyMesh.add(earL, earR);
+
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.85, 1.2, 32), toyMat);
+  torso.castShadow = true; torso.position.y = -0.5; toyMesh.add(torso);
+
+  const scarf = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.15, 16, 32), new THREE.MeshStandardMaterial({ color: 0xe35b6a, roughness: 0.8 }));
+  scarf.rotation.x = Math.PI/2; scarf.position.set(0, 0.05, 0); scarf.castShadow = true; toyMesh.add(scarf);
+
+  const packMat = new THREE.MeshStandardMaterial({ color: 0xa86e92, roughness: 0.7 });
+  const pack = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.0, 0.5), packMat);
+  pack.position.set(0, -0.4, -0.75); pack.rotation.x = -0.1; pack.castShadow = true; toyMesh.add(pack);
+  
+  const packPocket = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x905b7b, roughness: 0.7 }));
+  packPocket.position.set(0, -0.5, -0.95); packPocket.rotation.x = -0.1; toyMesh.add(packPocket);
+
+  const packStrap1 = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.2, 0.1), new THREE.MeshStandardMaterial({ color: 0x6e435d, roughness: 0.8 }));
+  packStrap1.position.set(-0.35, -0.4, 0.7); packStrap1.rotation.x = 0.1; toyMesh.add(packStrap1);
+  const packStrap2 = packStrap1.clone(); packStrap2.position.set(0.35, -0.4, 0.7); toyMesh.add(packStrap2);
+
+  const tail = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), toyMat);
+  tail.position.set(0, -0.85, -0.9); toyMesh.add(tail);
+
+  const limbGeo = new THREE.CylinderGeometry(0.25, 0.25, 1.0, 16);
+  const armL = new THREE.Mesh(limbGeo, toyMat); armL.position.set(-0.95, -0.3, 0); armL.castShadow = true; toyMesh.add(armL);
+  const armR = new THREE.Mesh(limbGeo, toyMat); armR.position.set(0.95, -0.3, 0); armR.castShadow = true; toyMesh.add(armR);
+
+  const legGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.0, 16);
+  const legL = new THREE.Mesh(legGeo, toyMat); legL.position.set(-0.4, -1.1, 0.2); legL.castShadow = true; toyMesh.add(legL);
+  const legR = new THREE.Mesh(legGeo, toyMat); legR.position.set(0.4, -1.1, 0.2); legR.castShadow = true; toyMesh.add(legR);
+
+  toyGroup.add(toyMesh);
+  threeScene.add(toyGroup);
+
+  let currentYOffset = 0;
+  toyGroup.position.set(0, getTerrainHeight(0,0) + 1.5, 0);
+
+  // ==========================================
+  // COLLECTIBLES & CLOUDS
+  // ==========================================
+  const collectibles = [];
+  const starGeo = new THREE.OctahedronGeometry(0.5, 0);
+  const starMat = new THREE.MeshStandardMaterial({ color: 0xffe100, emissive: 0xffaa00, emissiveIntensity: 1, metalness: 0.5, roughness: 0.2 });
+  
+  // Enemies System
+  const enemies = [];
+  const enemyMat = new THREE.MeshStandardMaterial({ color: 0x4a3b5c, roughness: 0.8, metalness: 0.2 }); // Dark Purple
+  const enemyEyeMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xaa0000, emissiveIntensity: 2 });
+
+  function addEnemy(x, z) {
+    const eGroup = new THREE.Group();
+    const eMesh = new THREE.Group();
+    // Simplified Dark Teddy
+    const eBody = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), enemyMat);
+    eBody.castShadow = true; eMesh.add(eBody);
+    const eHead = new THREE.Mesh(new THREE.SphereGeometry(0.8, 16, 16), enemyMat);
+    eHead.position.y = 1.2; eMesh.add(eHead);
+    const e1 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), enemyEyeMat);
+    e1.position.set(-0.3, 1.4, 0.6); eMesh.add(e1);
+    const e2 = e1.clone(); e2.position.set(0.3, 1.4, 0.6); eMesh.add(e2);
+    
+    eGroup.add(eMesh);
+    eGroup.position.set(x, getTerrainHeight(x, z) + 1.2, z);
+    threeScene.add(eGroup);
+    
+    // UI Banner
+    const banner = document.createElement('div');
+    banner.className = 'floating-score';
+    banner.innerHTML = '⭐ BUNNY: 0';
+    document.body.appendChild(banner);
+
+    enemies.push({ group: eGroup, mesh: eMesh, state: 'STROLL', target: null, timer: 0, score: 0, banner: banner });
+  }
+
+  for(let i=0; i<5; i++) {
+    addEnemy((Math.random()-0.5)*300, (Math.random()-0.5)*300);
+  }
+  
+  // Audio setup (using encoded paths for resilience)
+  const coinSound = new Audio('../SOUND/COIN%20SOUND.mpeg');
+  coinSound.volume = 0.8;
+  
+  const bgMusic = new Audio('../SOUND/BACKGROUND%20MUSIC.mpeg');
+  bgMusic.loop = true;
+  bgMusic.volume = 0.7;
+  let bgMusicStarted = false;
+
+  // Particle System for Sparkles
+  const sparkles = [];
+  const sparkleGeo = new THREE.SphereGeometry(0.1, 8, 8);
+  const sparkleMat = new THREE.MeshStandardMaterial({ color: 0xffea00, emissive: 0xfff000, emissiveIntensity: 2 });
+
+  function createSparkleBurst(x, y, z) {
+    for (let i = 0; i < 12; i++) {
+      const p = new THREE.Mesh(sparkleGeo, sparkleMat);
+      p.position.set(x, y, z);
+      const vx = (Math.random() - 0.5) * 0.3;
+      const vy = Math.random() * 0.4;
+      const vz = (Math.random() - 0.5) * 0.3;
+      p.userData = { vel: new THREE.Vector3(vx, vy, vz), life: 1.0 };
+      threeScene.add(p);
+      sparkles.push(p);
+    }
+  }
+
+  for (let i = 0; i < 30; i++) {
+    const star = new THREE.Mesh(starGeo, starMat);
+    const sx = (Math.random() - 0.5) * 400;
+    const sz = (Math.random() - 0.5) * 400;
+    const sy = getTerrainHeight(sx, sz);
+    if(sy > -0.5) {
+      star.position.set(sx, sy + 1.5, sz);
+      star.castShadow = true;
+      star.userData = { baseY: sy + 1.5, phase: Math.random() * Math.PI * 2 };
+      threeScene.add(star);
+      collectibles.push(star);
+    }
+  }
+
+  for (let i = 0; i < 30; i++) {
+    const cGeo = new THREE.BoxGeometry(15 + Math.random()*30, 5 + Math.random()*5, 8 + Math.random()*20);
+    const cMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, roughness: 0.3, metalness: 0.1 });
+    const cloud = new THREE.Mesh(cGeo, cMat);
+    cloud.position.set((Math.random()-0.5)*800, 60 + Math.random()*80, (Math.random()-0.5)*800);
+    cloud.castShadow = true;
+    threeScene.add(cloud);
+  }
+
+  // Floating ambient dust particles
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPos = [];
+  for(let i=0; i<1000; i++) dustPos.push((Math.random()-0.5)*400, Math.random()*40, (Math.random()-0.5)*400);
+  dustGeo.setAttribute('position', new THREE.Float32BufferAttribute(dustPos, 3));
+  const dustMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.4, transparent:true, opacity:0.6 });
+  const dust = new THREE.Points(dustGeo, dustMat);
+  threeScene.add(dust);
+
+  // ==========================================
+  // PHYSICS & INPUT LOGIC
+  // ==========================================
+  let score = 0;
+  const keys = { w: false, a: false, s: false, d: false, space: false, shift: false };
+  window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    if (key==='w' || e.code==='ArrowUp') keys.w = true;
+    if (key==='a' || e.code==='ArrowLeft') keys.a = true;
+    if (key==='s' || e.code==='ArrowDown') keys.s = true;
+    if (key==='d' || e.code==='ArrowRight') keys.d = true;
+    if (e.code==='Space') keys.space = true;
+    if (e.shiftKey) keys.shift = true;
+  });
+  window.addEventListener('keyup', (e) => {
+    const key = e.key.toLowerCase();
+    if (key==='w' || e.code==='ArrowUp') keys.w = false;
+    if (key==='a' || e.code==='ArrowLeft') keys.a = false;
+    if (key==='s' || e.code==='ArrowDown') keys.s = false;
+    if (key==='d' || e.code==='ArrowRight') keys.d = false;
+    if (e.code==='Space') keys.space = false;
+    if (!e.shiftKey) keys.shift = false;
+  });
+
+  let mouseDeltaX = 0;
+  document.addEventListener('mousemove', (e) => {
+    if (document.pointerLockElement === document.body) {
+      mouseDeltaX += e.movementX;
+    }
+  });
+
+  canvasContainer.addEventListener('click', () => {
+    if (document.getElementById('pause-menu').style.display !== 'flex') {
+       document.body.requestPointerLock();
+       if (!bgMusicStarted) {
+         bgMusic.play().catch(() => {});
+         bgMusicStarted = true;
+       }
+    }
+  });
+
+  function resumeGame() {
+    document.body.requestPointerLock();
+    document.getElementById('pause-menu').style.display = 'none';
+    isPaused = false;
+  }
+
+  function quitGame() {
+    window.location.href = '../../index.html';
+  }
+
+  let isPaused = false;
+  document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement !== document.body) {
+      document.getElementById('pause-menu').style.display = 'flex';
+      isPaused = true;
+    } else {
+      document.getElementById('pause-menu').style.display = 'none';
+      isPaused = false;
+    }
+  });
+
+  let toyVelocityY = 0;
+  const gravity = -0.018;
+  const jumpForce = 0.45;
+  let isJumping = false;
+  const walkSpeed = 0.22;
+  const runSpeed = 0.45;
+  const turnSpeed = 0.07;
+  
+  const toyRadius = 1.0; 
+  const MAP_BOUNDS = 380;
+  function checkCollision(nextX, nextZ) {
+    if (nextX < -MAP_BOUNDS || nextX > MAP_BOUNDS || nextZ < -MAP_BOUNDS || nextZ > MAP_BOUNDS) return true; // World Edge!
+    
+    let isCaveFloor = false;
+    for(let i=0; i<cavesData.length; i++) {
+        const c = cavesData[i];
+        const dx = nextX - c.x; const dz = nextZ - c.z;
+        const cosY = Math.cos(-c.rotY); const sinY = Math.sin(-c.rotY);
+        const lx = dx * cosY + dz * sinY; const lz = -dx * sinY + dz * cosY;
+        if (lx > -10.0 && lx < 10.0 && lz > -(c.tunLength/2 + 5) && lz < (c.tunLength/2 + 5)) {
+           isCaveFloor = true; 
+        }
+    }
+    
+    // Water barrier removed: Player can now go anywhere including the ocean!
+    // if (!isCaveFloor && getTerrainHeight(nextX, nextZ) < -1.1) return true; 
+    
+    for (let i = 0; i < collidables.length; i++) {
+       const c = collidables[i];
+       const dx = nextX - c.x; const dz = nextZ - c.z;
+       // Correct dynamic broadphase physics distance
+       if (Math.abs(dx) > c.r + toyRadius + 0.1 || Math.abs(dz) > c.r + toyRadius + 0.1) continue; 
+       if (Math.sqrt(dx*dx + dz*dz) < toyRadius + c.r) return true;
+    }
+    return false;
+  }
+
+  window.addEventListener('resize', () => {
+    threeCamera.aspect = window.innerWidth / window.innerHeight;
+    threeCamera.updateProjectionMatrix();
+    threeRenderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  let t = 0;
+  function animate() {
+    threeAnimId = requestAnimationFrame(animate);
+    if (isPaused) return; // Freeze simulation on pause
+    
+    t += 0.02;
+
+    let baseFloorH = getTerrainHeight(toyGroup.position.x, toyGroup.position.z);
+    for(let i=0; i<cavesData.length; i++) {
+        const c = cavesData[i];
+        const dx = toyGroup.position.x - c.x; const dz = toyGroup.position.z - c.z;
+        const cosY = Math.cos(-c.rotY); const sinY = Math.sin(-c.rotY);
+        const lx = dx * cosY + dz * sinY; const lz = -dx * sinY + dz * cosY;
+        if (lx > -7.5 && lx < 7.5 && lz > -(c.tunLength/2 + 5) && lz < (c.tunLength/2 + 5)) {
+            // Smoothly override terrain physics to lock the player stably on the passage bridge!
+            const edgeDist = Math.min((c.tunLength/2 + 5) - Math.abs(lz), 3.0);
+            const blend = edgeDist / 3.0;
+            baseFloorH = baseFloorH * (1 - blend) + (c.floorHeight) * blend;
+        }
+    }
+    
+    const slH = getSlideHeight(toyGroup.position.x, toyGroup.position.z);
+    if (slH > baseFloorH) {
+       baseFloorH = slH;
+    }
+
+    let isMoving = false;
+    let dirZ = 0; 
+    let rotY = toyGroup.rotation.y;
+
+    // Mouse rotation
+    const mouseSensitivity = 0.003;
+    rotY -= mouseDeltaX * mouseSensitivity;
+    mouseDeltaX = 0; // reset delta after applying
+
+    if (onRampSlide !== null) {
+       rotY = onRampSlide.rotY + Math.PI; // point down the slide
+    }
+
+    const currentSpeed = (keys.shift && (keys.w || keys.s)) ? runSpeed : walkSpeed;
+
+    if (keys.w) { dirZ = -currentSpeed; isMoving = true; }
+    if (keys.s) { dirZ = currentSpeed * 0.6; isMoving = true; }
+    if (keys.a) { rotY += turnSpeed; }
+    if (keys.d) { rotY -= turnSpeed; }
+
+    toyGroup.rotation.y = rotY;
+
+    let tryX = toyGroup.position.x;
+    let tryZ = toyGroup.position.z;
+
+    if (isMoving && onRampSlide === null) {
+      const moveX = Math.sin(rotY) * dirZ;
+      const moveZ = Math.cos(rotY) * dirZ;
+      
+      if (!checkCollision(tryX + moveX, tryZ)) tryX += moveX;
+      if (!checkCollision(tryX, tryZ + moveZ)) tryZ += moveZ;
+    }
+
+    if (onRampSlide !== null) {
+      // Force slide down using gravity-like constant movement
+      const slideForce = 0.32;
+      const vx = Math.sin(onRampSlide.rotY) * slideForce;
+      const vz = Math.cos(onRampSlide.rotY) * slideForce;
+      if (!checkCollision(tryX + vx, tryZ)) tryX += vx;
+      if (!checkCollision(tryX, tryZ + vz)) tryZ += vz;
+      isMoving = true;
+    }
+
+    toyGroup.position.x = tryX;
+    toyGroup.position.z = tryZ;
+
+    if (isMoving && onRampSlide === null) {
+      const animFreq = keys.shift ? 24 : 14; 
+      legL.rotation.x = Math.sin(t * animFreq) * 0.6;
+      legR.rotation.x = -Math.sin(t * animFreq) * 0.6;
+      armL.rotation.x = -Math.sin(t * animFreq) * 0.45;
+      armR.rotation.x = Math.sin(t * animFreq) * 0.45;
+      armL.rotation.z = THREE.MathUtils.lerp(armL.rotation.z, keys.shift ? -0.2 : 0, 0.15);
+      armR.rotation.z = THREE.MathUtils.lerp(armR.rotation.z, keys.shift ? 0.2 : 0, 0.15);
+    } else if (onRampSlide !== null) {
+      // Wheeee! Sliding Pose
+      legL.rotation.x = THREE.MathUtils.lerp(legL.rotation.x, 1.4, 0.2);
+      legR.rotation.x = THREE.MathUtils.lerp(legR.rotation.x, 1.4, 0.2);
+      armL.rotation.x = THREE.MathUtils.lerp(armL.rotation.x, 2.7, 0.2);
+      armR.rotation.x = THREE.MathUtils.lerp(armR.rotation.x, 2.7, 0.2);
+      armL.rotation.z = THREE.MathUtils.lerp(armL.rotation.z, -0.6, 0.2);
+      armR.rotation.z = THREE.MathUtils.lerp(armR.rotation.z, 0.6, 0.2);
+    } else {
+      legL.rotation.x = THREE.MathUtils.lerp(legL.rotation.x, 0, 0.15);
+      legR.rotation.x = THREE.MathUtils.lerp(legR.rotation.x, 0, 0.15);
+      armL.rotation.x = THREE.MathUtils.lerp(armL.rotation.x, 0, 0.15);
+      armR.rotation.x = THREE.MathUtils.lerp(armR.rotation.x, 0, 0.15);
+      armL.rotation.z = THREE.MathUtils.lerp(armL.rotation.z, 0, 0.15);
+      armR.rotation.z = THREE.MathUtils.lerp(armR.rotation.z, 0, 0.15);
+    }
+
+    if (keys.space && !isJumping) {
+      toyVelocityY = jumpForce;
+      isJumping = true;
+    }
+    
+    toyVelocityY += gravity;
+    currentYOffset += toyVelocityY;
+
+    if (currentYOffset <= 1.5) {
+      currentYOffset = 1.5;
+      toyVelocityY = 0;
+      isJumping = false;
+    }
+    
+    toyGroup.position.y = baseFloorH + currentYOffset;
+
+    // SCALE BASED ON SCORE
+    const pScale = 1.0 + (tasks.stars * 0.05);
+    toyMesh.scale.lerp(new THREE.Vector3(pScale, pScale, pScale), 0.1);
+
+    const speedParam = isMoving && onRampSlide === null ? 2.0 : 0;
+    toyMesh.position.y = Math.sin(t * (4 + speedParam)) * 0.15;
+    if (isMoving && onRampSlide === null) {
+      toyMesh.rotation.z = Math.sin(t * (keys.shift ? 20 : 12)) * 0.08;
+      toyMesh.rotation.x = THREE.MathUtils.lerp(toyMesh.rotation.x, keys.shift ? 0.25 : 0, 0.1); // Lean forward when running
+    } else if (onRampSlide !== null) {
+      toyMesh.rotation.z = THREE.MathUtils.lerp(toyMesh.rotation.z, 0, 0.1);
+      toyMesh.rotation.x = THREE.MathUtils.lerp(toyMesh.rotation.x, -0.4, 0.15); // Lean back!
+    } else {
+      toyMesh.rotation.z = THREE.MathUtils.lerp(toyMesh.rotation.z, 0, 0.1);
+      toyMesh.rotation.x = THREE.MathUtils.lerp(toyMesh.rotation.x, 0, 0.1);
+    }
+
+    let tasksUpdated = false;
+
+    for (let i = collectibles.length - 1; i >= 0; i--) {
+      const c = collectibles[i];
+      c.rotation.y += 0.04; c.rotation.x += 0.02;
+      c.position.y = c.userData.baseY + Math.sin(t * 4 + c.userData.phase) * 0.5;
+
+      if (c.position.distanceTo(toyGroup.position) < 2.5) {
+        createSparkleBurst(c.position.x, c.position.y, c.position.z);
+        
+        // Play coin sound (reset for overlapping sounds)
+        const s = coinSound.cloneNode();
+        s.volume = 0.8;
+        s.play().catch(() => {}); 
+
+        threeScene.remove(c);
+        collectibles.splice(i, 1);
+        tasks.stars++;
+        tasksUpdated = true;
+      }
+    }
+
+    // Update Sparkles
+    for (let i = sparkles.length - 1; i >= 0; i--) {
+      const p = sparkles[i];
+      p.position.add(p.userData.vel);
+      p.userData.vel.y -= 0.01; // gravity
+      p.userData.life -= 0.025;
+      p.scale.setScalar(p.userData.life);
+      if (p.userData.life <= 0) {
+        threeScene.remove(p);
+        sparkles.splice(i, 1);
+      }
+    }
+
+    // Update Enemies AI
+    for (let i = enemies.length - 1; i >= 0; i--) {
+       const e = enemies[i];
+       const distToPlayer = e.group.position.distanceTo(toyGroup.position);
+       
+       // AI Decisions
+       if (distToPlayer < 25) {
+          e.state = 'HUNT';
+          e.target = toyGroup.position;
+       } else {
+          // If not hunting player, try to find nearest star
+          let nearestStar = null;
+          let minDist = 30;
+          for(let s of collectibles) {
+             const d = e.group.position.distanceTo(s.position);
+             if (d < minDist) { minDist = d; nearestStar = s; }
+          }
+          if (nearestStar) {
+             e.state = 'STEAL';
+             e.target = nearestStar.position;
+          } else {
+             e.state = 'STROLL';
+          }
+       }
+
+       // Movement Logic
+       if (e.state === 'HUNT' || e.state === 'STEAL') {
+          const dir = new THREE.Vector3().subVectors(e.target, e.group.position).normalize();
+          const es = 0.22; // FASTER ENEMIES
+          const nx = e.group.position.x + dir.x * es;
+          const nz = e.group.position.z + dir.z * es;
+          if (!checkCollision(nx, nz)) {
+             e.group.position.x = nx;
+             e.group.position.z = nz;
+          }
+          e.mesh.rotation.x = Math.sin(t * 15) * 0.2; // Waddle
+       }
+       
+       // SCALE BASED ON SCORE (ENEMY)
+       const eScale = 1.0 + (e.score * 0.05);
+       e.mesh.scale.lerp(new THREE.Vector3(eScale, eScale, eScale), 0.1);
+       
+       e.group.position.y = getTerrainHeight(e.group.position.x, e.group.position.z) + (1.2 * eScale);
+
+       // Interaction: Catch Player (SCORE CLASH)
+       if (distToPlayer < 2.0) {
+          if (toyVelocityY < 0 && toyGroup.position.y > e.group.position.y + 0.8) {
+             // PLAYER STOMP KILL! (Steal all bunny points)
+             tasks.stars += e.score + 2; 
+             createSparkleBurst(e.group.position.x, e.group.position.y + 1, e.group.position.z);
+             
+             // Play Death Sound
+             const deathSnd = new Audio('../SOUND/enemy_death.mpeg');
+             deathSnd.volume = 1.0;
+             deathSnd.play().catch(() => {});
+
+             threeScene.remove(e.group);
+             e.banner.remove();
+             enemies.splice(i, 1);
+             toyVelocityY = 0.35; // bounce player
+             continue;
+          } else {
+             // COLLISION CLASH!
+             if (tasks.stars >= e.score) {
+                // Player wins clash
+                tasks.stars += e.score;
+                e.score = 0;
+                createSparkleBurst(e.group.position.x, e.group.position.y + 1, e.group.position.z);
+                e.group.position.set((Math.random()-0.5)*400, 10, (Math.random()-0.5)*400); // Relocate bunny
+             } else {
+                // Enemy wins clash (Steals all player points!)
+                e.score += tasks.stars;
+                tasks.stars = 0;
+                createSparkleBurst(toyGroup.position.x, toyGroup.position.y + 1, toyGroup.position.z);
+                e.group.position.set((Math.random()-0.5)*400, 10, (Math.random()-0.5)*400); 
+             }
+          }
+       }
+
+       // Interaction: Steal Star
+       for (let j = collectibles.length - 1; j >= 0; j--) {
+          if (e.group.position.distanceTo(collectibles[j].position) < 2.0) {
+             threeScene.remove(collectibles[j]);
+             collectibles.splice(j, 1);
+             e.score += 1;
+             createSparkleBurst(e.group.position.x, e.group.position.y + 1, e.group.position.z);
+          }
+       }
+
+       // Update Banner 2D Position
+       const vector = e.group.position.clone();
+       vector.y += 2.5; 
+       vector.project(threeCamera);
+       if (vector.z < 1) {
+          e.banner.style.display = 'block';
+          e.banner.style.left = (vector.x * 0.5 + 0.5) * window.innerWidth + 'px';
+          e.banner.style.top = (-vector.y * 0.5 + 0.5) * window.innerHeight + 'px';
+          e.banner.innerHTML = `⭐ SHADOW: ${e.score}`;
+       } else {
+          e.banner.style.display = 'none';
+       }
+    }
+
+    // Update Player Banner
+    const pVector = toyGroup.position.clone();
+    pVector.y += 2.5;
+    pVector.project(threeCamera);
+    const pBanner = document.getElementById('player-banner');
+    if (pVector.z < 1) {
+       pBanner.style.display = 'block';
+       pBanner.style.left = (pVector.x * 0.5 + 0.5) * window.innerWidth + 'px';
+       pBanner.style.top = (-pVector.y * 0.5 + 0.5) * window.innerHeight + 'px';
+       pBanner.innerHTML = `⭐ ME: ${tasks.stars}`;
+    } else {
+       pBanner.style.display = 'none';
+    }
+
+    if (!tasks.maze) {
+       for(let i=0; i<mazesData.length; i++) {
+          if (Math.abs(tryX - mazesData[i].x) < 8 && Math.abs(tryZ - mazesData[i].z) < 8) {
+             tasks.maze = true;
+             tasksUpdated = true;
+          }
+       }
+    }
+
+    if (!tasks.slide && onRampSlide !== null) {
+       tasks.slide = true;
+       tasksUpdated = true;
+    }
+    
+    if (tasksUpdated) {
+       let t1Color = tasks.stars >= 15 ? "#66ff66" : "#ffd700";
+       let t1Text = tasks.stars >= 15 ? "✔️ 15 Stars Collected!" : `⭐ Collect 15 Stars (${tasks.stars}/15)`;
+       document.getElementById('task1').innerHTML = `<span style="color:${t1Color}">${t1Text}</span>`;
+
+       let t2Color = tasks.maze ? "#66ff66" : "#ffd700";
+       let t2Text = tasks.maze ? "✔️ Maze Discovered!" : "🏃 Find a Pink Maze";
+       document.getElementById('task2').innerHTML = `<span style="color:${t2Color}">${t2Text}</span>`;
+
+       let t3Color = tasks.slide ? "#66ff66" : "#ffd700";
+       let t3Text = tasks.slide ? "✔️ Slide Master!" : "🎢 Ride a Playground Slide";
+       document.getElementById('task3').innerHTML = `<span style="color:${t3Color}">${t3Text}</span>`;
+
+       if (tasks.stars >= 15 && tasks.maze && tasks.slide) {
+          document.getElementById('toy-score').innerHTML = `PLAYGROUND <br/><span style="color:#ffdc45;">CONQUERED!</span><br/><div class="hud-sub" style="color:#66ff66">✔️ All Adventures Completed!</div>`;
+       }
+    }
+
+    dust.rotation.y = t * 0.1;
+
+    const relativeCameraOffset = new THREE.Vector3(0, 6, 16);
+    const cameraOffset = relativeCameraOffset.applyMatrix4(toyGroup.matrixWorld);
+    
+    threeCamera.position.lerp(cameraOffset, 0.1); 
+    
+    const lookOffset = new THREE.Vector3(0, 2.5, 0); 
+    const lookPos = lookOffset.applyMatrix4(toyGroup.matrixWorld);
+    threeCamera.lookAt(lookPos);
+
+    // Sun lighting update & Atmosphere sync
+    sun.position.copy(sunPos).multiplyScalar(500);
+    
+    // Wave animation for water
+    ocean.position.y = -1.2 + Math.sin(t * 0.5) * 0.1;
+
+    // render with post-processing
+    composer.render();
+  }
+  
+  animate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | Cuddle Cove</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #1e988a;
+      --primary-light: #e5f4ef;
+      --primary-dark: #166e64;
+      --secondary: #f9c6d0;
+      --bg: #f7fbff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --shadow: 0 4px 30px rgba(0,0,0,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+    /* NAVBAR */
+    #navbar { background: var(--primary); padding: 15px 0; width: 100%; position: sticky; top: 0; z-index: 1000; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-logo img { height: 45px; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-link { color: #fff; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 20px; color: #fff; font-size: 1.2rem; }
+    .nav-icon-btn { cursor: pointer; }
+
+    /* SIGN IN PAGE LAYOUT */
+    .signin-container { max-width: 1100px; margin: 80px auto; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 0 20px; }
+
+    /* LEFT SIDE: WELCOME */
+    .welcome-side { position: relative; }
+    .welcome-tag { color: var(--primary); font-weight: 800; font-size: 1rem; margin-bottom: 10px; display: block; }
+    .welcome-tag::before, .welcome-tag::after { content: ' ✨ '; }
+    .sign-in-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 4rem; color: var(--primary); margin-bottom: 20px; }
+    .sign-in-desc { color: var(--text-muted); font-size: 1.1rem; font-weight: 600; line-height: 1.6; margin-bottom: 40px; }
+    
+    .plushie-img-container { position: relative; padding-bottom: 50px; }
+    .plushie-img { width: 100%; max-width: 500px; }
+    .clouds-decor { position: absolute; bottom: 0; left: 0; width: 100%; z-index: -1; }
+
+    /* RIGHT SIDE: CARD */
+    .signin-card { background: #fff; border-radius: 25px; padding: 50px; box-shadow: var(--shadow); position: relative; }
+    .card-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 30px; }
+    
+    .form-group { margin-bottom: 25px; }
+    .form-group label { display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 15px 20px; border: 2px solid #e2e8f0; border-radius: 15px; font-family: inherit; font-size: 1rem; outline: none; transition: 0.3s; }
+    .form-input:focus { border-color: var(--primary); }
+    
+    .forgot-link { display: block; text-align: right; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; margin-top: 5px; }
+    
+    .remember-me { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; cursor: pointer; }
+    .remember-me input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+    .remember-me span { font-weight: 700; font-size: 0.95rem; }
+
+    .signin-btn { width: 100%; background: #0b5e58; color: #fff; padding: 18px; border: none; border-radius: 15px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .signin-btn:hover { background: #084a45; }
+
+    .divider { text-align: center; margin: 30px 0; position: relative; color: #94a3b8; font-size: 0.8rem; font-weight: 700; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: #e2e8f0; }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .social-btns { display: flex; gap: 15px; margin-bottom: 30px; }
+    .social-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+    .social-btn:hover { background: #f8fafc; }
+    .social-btn img { width: 20px; }
+
+    .signup-link { text-align: center; font-size: 0.85rem; font-weight: 700; color: #64748b; }
+    .signup-link a { color: var(--primary); }
+
+    /* FOOTER BADGES */
+    .trust-footer { display: flex; justify-content: space-around; padding: 60px 0; border-top: 1px solid #eee; background: #fff; margin-top: 100px; }
+    .trust-item { display: flex; align-items: center; gap: 15px; max-width: 250px; }
+    .trust-icon { width: 50px; height: 50px; background: #f0f7f6; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .trust-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 3px; }
+    .trust-desc { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; line-height: 1.4; }
+
+    /* SITE FOOTER */
+    .site-footer { background: #8cd4cd; padding: 60px 20px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    .footer-col h4 { font-family: 'Nunito', sans-serif; font-weight: 800; margin-bottom: 20px; }
+    .footer-col ul li { list-style: none; margin-bottom: 10px; }
+    .footer-col ul li a { font-size: 0.85rem; font-weight: 600; color: #333; }
+    .footer-col p { font-size: 0.85rem; color: #333; line-height: 1.8; }
+    .footer-bottom { text-align: center; margin-top: 50px; font-size: 0.8rem; opacity: 0.8; }
+
+    @media (max-width: 900px) {
+      .signin-container { grid-template-columns: 1fr; margin: 40px auto; text-align: center; }
+      .forgot-link { text-align: center; }
+      .remember-me { justify-content: center; }
+      .trust-footer { flex-direction: column; gap: 30px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="nav-icon-btn"><i class="fas fa-search"></i></div>
+        <div class="nav-icon-btn"><i class="far fa-heart"></i></div>
+        <div class="nav-icon-btn" onclick="window.location.href='user_profile.html'"><i class="fas fa-user"></i></div>
+        <div class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="signin-container">
+    
+    <!-- LEFT SIDE -->
+    <div class="welcome-side">
+      <span class="welcome-tag">Welcome Back!</span>
+      <h1 class="sign-in-title">Sign In</h1>
+      <p class="sign-in-desc">
+        We're so happy to see you again! <br>
+        Login to continue your cuddly journey.
+      </p>
+      
+      <div class="plushie-img-container">
+        <!-- Mockup of the three plushies as shown in image -->
+        <img src="https://img.freepik.com/free-photo/cute-teddy-bear-stuffed-animal-white-background_23-2150821631.jpg" class="plushie-img" alt="Cuddly Friends">
+        <div class="clouds-decor">
+          <!-- SVG or decorative clouds -->
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: FORM CARD -->
+    <div class="signin-card">
+      <h2 class="card-title">🔐 Sign In to Your Account</h2>
+      
+      <form id="signin-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="Enter your email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" class="form-input" placeholder="Enter your password" required>
+          <a href="#" class="forgot-link">Forgot Password? 📩</a>
+        </div>
+        
+        <label class="remember-me">
+          <input type="checkbox" checked>
+          <span>Remember Me</span>
+        </label>
+        
+        <button type="submit" class="signin-btn">Sign In &rarr;</button>
+      </form>
+
+      <script>
+        document.getElementById('signin-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value;
+          const pass = document.getElementById('login-pass').value;
+
+          const savedUser = JSON.parse(localStorage.getItem('cuddleUser'));
+
+          if (savedUser && savedUser.email === email && savedUser.pass === pass) {
+            localStorage.setItem('isLoggedIn', 'true');
+            alert('Login successful! Welcome back.');
+            window.location.href = 'user_profile.html';
+          } else {
+            alert('Invalid email or password. Please try again.');
+          }
+        });
+      </script>
+      
+      <div class="divider">or continue with</div>
+      
+      <div class="social-btns">
+        <div class="social-btn">
+          <img src="https://WWW.svgrepo.com/show/475656/google-color.svg" alt="Google">
+          Google
+        </div>
+        <div class="social-btn">
+          <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook">
+          facebook
+        </div>
+        <div class="social-btn">
+          <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple">
+          apple
+        </div>
+      </div>
+      
+      <p class="signup-link">
+        Don't have an account? <a href="sign_up.html">Sign Up</a>
+      </p>
+    </div>
+
+  </main>
+
+  <!-- TRUST BADGES -->
+  <section class="trust-footer">
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-shield-alt"></i></div>
+      <div>
+        <p class="trust-title">Secure & Safe</p>
+        <p class="trust-desc">Your data is always protected with us.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-award"></i></div>
+      <div>
+        <p class="trust-title">Premium Quality</p>
+        <p class="trust-desc">We ensure the best for your little ones.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-truck-fast"></i></div>
+      <div>
+        <p class="trust-title">Fast Delivery</p>
+        <p class="trust-desc">Quick and reliable delivery to your door.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-rotate-left"></i></div>
+      <div>
+        <p class="trust-title">Easy Returns</p>
+        <p class="trust-desc">Hassle-free returns within 7 days.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+          <li><a href="#">Customer Reviews</a></li>
+          <li><a href="about_us.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Shipping & Delivery</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="track_order.html">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4 style="font-size:0.75rem;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div style="display:flex; background:#fff; border-radius:30px; padding:5px; border:1px solid #ccc; margin-top:15px;">
+           <input type="text" style="border:none;flex:1;padding:5px 15px;outline:none;">
+           <button style="background:none;border:none;color:var(--primary);cursor:pointer;padding-right:15px;"><i class="fas fa-search"></i></button>
+        </div>
+        <p style="margin-top:20px; font-weight:700; font-size:0.8rem;">FIND US ON</p>
+        <div style="display:flex; gap:15px; margin-top:15px;">
+           <i class="fab fa-youtube"></i>
+           <i class="fab fa-twitter"></i>
+           <i class="fab fa-instagram"></i>
+           <i class="fab fa-facebook"></i>
+           <i class="fab fa-linkedin"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 Cuddle Cove. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

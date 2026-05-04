@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Billing & Checkout — Cuddle Cove</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* BILLING SPECIFIC STYLES */
+    body {
+      background-color: #f0f7f6;
+      color: #333;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    #navbar {
+      background: #1e988a !important;
+      padding: 12px 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-link { color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 15px; color: #fff; }
+    .nav-icon-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+    .logo-bear { background: #f9c6d0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+    .checkout-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .checkout-header {
+      margin-bottom: 40px;
+    }
+    .checkout-header h1 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 2.2rem;
+      color: #000;
+      margin-bottom: 5px;
+    }
+    .checkout-header p {
+      color: #555;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 50px;
+      gap: 0;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .step.clickable {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .step.clickable:hover {
+      opacity: 0.7;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      color: #1e988a;
+      font-size: 0.9rem;
+      z-index: 2;
+    }
+    .step.active .step-num {
+      background: #1e988a;
+      border-color: #1e988a;
+      color: #fff;
+    }
+    .step-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #888;
+    }
+    .step.active .step-label { color: #000; }
+    .line {
+      flex: 1;
+      height: 2px;
+      background: #ddd;
+      margin: 0 15px;
+      max-width: 250px;
+      min-width: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .progress-bar { gap: 5px; }
+      .step-label { font-size: 0.75rem; }
+      .line { margin: 0 5px; }
+      .step-num { width: 28px; height: 28px; font-size: 0.75rem; }
+    }
+
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 40px;
+    }
+
+    /* Forms */
+    .billing-section {
+      background: transparent;
+    }
+    .billing-section h2 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 12px;
+      border: 1px solid #c9dfdb;
+      background: #fff;
+      outline: none;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #1e988a; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .checkbox-group input {
+      width: 22px; height: 22px;
+      cursor: pointer;
+      accent-color: #1e988a;
+    }
+    .checkbox-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 0;
+    }
+
+    /* Shipping & Payment Options */
+    .option-group {
+      margin-bottom: 40px;
+    }
+    .option-group h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+    .option-group p { font-size: 0.8rem; color: #777; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; }
+    
+    .radio-card {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .radio-card .left { display: flex; align-items: center; gap: 10px; }
+    .radio-card input { accent-color: #1e988a; width: 18px; height: 18px; }
+    .radio-card label { font-size: 0.9rem; font-weight: 600; color: #333; }
+    .radio-card .price { font-weight: 700; font-size: 0.85rem; }
+    .price.free { color: #2ecc71; }
+
+    .payment-icons { display: flex; gap: 10px; align-items: center; }
+    .payment-icons img { height: 12px; }
+
+    /* Order Summary (Right) */
+    .summary-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .summary-items {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .summary-item {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .summary-item img {
+      width: 80px; height: 80px;
+      background: #fdfdfd;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .summary-item-info { flex: 1; }
+    .summary-item-name { font-weight: 800; font-size: 0.9rem; color: #000; margin-bottom: 2px; }
+    .summary-item-sub { font-size: 0.7rem; color: #888; margin-bottom: 5px; }
+    .summary-item-price { font-weight: 800; font-size: 1rem; }
+    .summary-item-qty { font-size: 0.7rem; color: #888; font-weight: 700; text-align: right; margin-top: -15px; }
+
+    .price-details {
+      border-top: 1px solid #eee;
+      padding: 20px;
+    }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 700; }
+    .price-row.discount { color: #2ecc71; }
+    .price-row.total { 
+      margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; 
+      font-size: 1.6rem; font-weight: 900; 
+    }
+
+    .secure-box {
+      background: #e6f6f5;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 25px;
+      border-radius: 8px;
+    }
+    .secure-box i { font-size: 2rem; color: #4b8b86; }
+    .secure-text { font-size: 0.75rem; font-weight: 700; color: #4b8b86; }
+    .secure-text span { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 2px; color: #1a3a38; }
+
+    /* REAL-TIME DELIVERY CARD */
+    .delivery-status-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-top: 25px;
+      text-align: left;
+    }
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .card-header-row h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #1a3a38;
+      margin: 0;
+    }
+    .change-btn {
+      color: #1e988a;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .delivery-info-box {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .delivery-info-box i {
+      color: #1e988a;
+      font-size: 1.2rem;
+      margin-top: 3px;
+    }
+    .delivery-details .user-name {
+      display: block;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #1a3a38;
+      margin-bottom: 4px;
+    }
+    .delivery-details .user-addr {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .est-delivery-row {
+      margin-bottom: 20px;
+    }
+    .est-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .est-date {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #1e988a;
+    }
+    .est-time {
+      font-size: 0.8rem;
+      color: #888;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .safe-hands-msg {
+      background: #f0f9f8;
+      padding: 15px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .safe-hands-msg i {
+      color: #4b8b86;
+      font-size: 1.2rem;
+    }
+    .safe-hands-msg p {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4b8b86;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: #1e988a;
+      color: #fff;
+      padding: 16px;
+      border-radius: 99px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 40px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Footer */
+    .site-footer { background: #8cd4cd !important; padding: 40px 20px 20px !important; margin-top: 80px; }
+    .footer-col h4 { font-family: 'Quicksand', sans-serif; font-weight: 700; color: #000 !important; margin-bottom: 15px; }
+    .footer-col ul li a { color: #333 !important; font-size: 0.85rem !important; text-decoration: none; }
+    .footer-col p { color: #333 !important; font-size: 0.85rem !important; }
+    .social-icons { display: flex; gap: 15px; margin-top: 15px; font-size: 1.2rem; color: #333; }
+
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      alert('You must be signed in to access the checkout page.');
+      window.location.href = 'sign_in.html';
+    }
+  </script>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-icon-btn"><i class="fas fa-search"></i></button>
+        <button class="nav-icon-btn"><i class="fas fa-heart"></i></button>
+        <a id="user-nav-link" href="user_profile.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a href="payment_cart.html" class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('user-nav-link').href = 'user_profile.html';
+      } else {
+        document.getElementById('user-nav-link').href = 'sign_in.html';
+      }
+    });
+  </script>
+
+  <main class="checkout-container">
+    <div class="checkout-header">
+      <h1>Billing & Checkout</h1>
+      <p>Fill in your details to bring your cuddles home 🧸</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar">
+      <div class="step clickable" onclick="window.location.href='payment_cart.html'">
+        <div class="step-num">1</div>
+        <div class="step-label">cart</div>
+      </div>
+      <div class="line" style="background: #1e988a;"></div>
+      <div class="step active">
+        <div class="step-num">2</div>
+        <div class="step-label">Billing</div>
+      </div>
+      <div class="line"></div>
+      <div class="step clickable" onclick="window.location.href='order_success.html'">
+        <div class="step-num">3</div>
+        <div class="step-label">payment</div>
+      </div>
+    </div>
+
+    <div class="checkout-layout">
+      <!-- LEFT: BILLING FORM -->
+      <div class="billing-section">
+        <div id="saved-addr-picker" style="margin-bottom: 30px; display: none;">
+          <h3 style="font-family:'Nunito'; font-weight:800; font-size:1.1rem; margin-bottom:15px; color:#1e988a;">Use a Saved Address</h3>
+          <div id="saved-addr-list" style="display:flex; gap:15px; overflow-x:auto; padding-bottom:10px;">
+            <!-- Addresses will be injected here -->
+          </div>
+        </div>
+
+        <h2>Billing Details</h2>
+        <form>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="billing-name" placeholder="" oninput="renderSummary()">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="billing-email" placeholder="" oninput="renderSummary()">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="billing-phone" placeholder="" oninput="renderSummary()">
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="billing-address" placeholder="" oninput="renderSummary()">
+          </div>
+          <div class="form-group">
+            <label>Landmark (Optional)</label>
+            <input type="text" id="billing-landmark" placeholder="" oninput="renderSummary()">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="billing-city" placeholder="" oninput="renderSummary()">
+            </div>
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" id="billing-pincode" placeholder="" oninput="renderSummary()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="billing-state" placeholder="" oninput="renderSummary()">
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="save-address" checked>
+            <label for="save-address">Save this address for faster checkout next time</label>
+          </div>
+
+          <!-- SHIPPING METHOD -->
+          <div class="option-group">
+            <h3>Shipping Method</h3>
+            <p>Choose Delivery Option</p>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="shipping" id="std" value="0" checked onchange="renderSummary()">
+                <label for="std">Standard Delivery (3—5 days)</label>
+              </div>
+              <span class="price free">FREE</span>
+            </div>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="shipping" id="exp" value="99" onchange="renderSummary()">
+                <label for="exp">Express Delivery (1—2 days)</label>
+              </div>
+              <span class="price">₹99</span>
+            </div>
+          </div>
+
+          <!-- PAYMENT OPTION -->
+          <div class="option-group">
+            <h3>Select Payment Option</h3>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="payment" id="upi" checked>
+                <label for="upi">UPI / Google Pay / PhonePe &nbsp; </label>
+                <div class="payment-icons">
+                  <img src="https://img.icons8.com/color/48/upi.png" alt="UPI">
+                  <img src="https://img.icons8.com/color/48/google-pay.png" alt="GPay">
+                  <img src="https://img.icons8.com/color/48/phonepe.png" alt="PhonePe">
+                </div>
+              </div>
+            </div>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="payment" id="card">
+                <label for="card">Credit / Debit Card</label>
+              </div>
+            </div>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="payment" id="nb">
+                <label for="nb">Net Banking</label>
+              </div>
+            </div>
+            <div class="radio-card">
+              <div class="left">
+                <input type="radio" name="payment" id="cod">
+                <label for="cod">Cash on Delivery</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div class="summary-section">
+        <div class="summary-card">
+          <div class="summary-items" id="billing-summary-list">
+            <!-- Items populated by JS -->
+          </div>
+
+          <div class="price-details">
+            <h3 style="font-family:'Nunito'; font-weight:800; margin-bottom:15px;">Price Details</h3>
+            <div class="price-row">
+              <span id="label-subtotal">Subtotal (3 items)</span>
+              <span id="val-subtotal">₹1,946</span>
+            </div>
+            <div class="price-row discount">
+              <span>Discount</span>
+              <span id="val-discount">-₹448</span>
+            </div>
+            <div class="price-row">
+              <span>Shipping</span>
+              <span id="val-shipping">₹0</span>
+            </div>
+            <div class="price-row total">
+              <span>Total Amount</span>
+              <span id="val-total">₹1,498</span>
+            </div>
+            <p style="font-size: 0.7rem; color: #888; margin-top: 5px;">(Incl. of all taxes)</p>
+          </div>
+        </div>
+
+        <div class="secure-box">
+          <i class="fas fa-shield-alt"></i>
+          <div class="secure-text">
+            <span>Safe & Secure Payments 🔒</span>
+            Your payment information is fully protected.
+          </div>
+        </div>
+
+        <!-- REAL-TIME DELIVERY PREVIEW CARD -->
+        <div id="live-preview" class="delivery-status-card" style="display: none;">
+          <div class="card-header-row">
+            <h3>Delivery Address</h3>
+            <a href="#billing-name" class="change-btn">Change</a>
+          </div>
+          
+          <div class="delivery-info-box">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="delivery-details">
+              <span class="user-name" id="preview-name">Rahul Sharma</span>
+              <div class="user-addr" id="preview-address">
+                123, Green Park, South Extension<br>
+                New Delhi - 110016, Delhi<br>
+                +91 98765 43210
+              </div>
+            </div>
+          </div>
+
+          <div class="est-delivery-row">
+            <div class="est-label">
+              <i class="far fa-calendar-alt"></i>
+              Estimated Delivery
+            </div>
+            <div class="est-date" id="preview-est-date">Today, 4 May 2026</div>
+            <div class="est-time">by 8:00 PM</div>
+          </div>
+
+          <div class="safe-hands-msg">
+            <i class="fas fa-shield-alt"></i>
+            <p>Your order is in safe hands! We'll update you at every step.</p>
+          </div>
+        </div>
+
+        <button class="checkout-btn" onclick="saveOrderAndProceed()">
+          PROCEED TO CHECKOUT &nbsp; &mdash;&gt;
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+          <li><a href="#">Customer Reviews</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Shipping & Delivery</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4 style="font-size: 0.75rem; letter-spacing: 1px; color: #333 !important;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div style="display:flex; margin-top:10px; background:#fff; border-radius:30px; overflow:hidden; padding:2px; border:1px solid #ccc; max-width:300px;">
+          <input type="text" style="flex:1; border:none; padding:8px 15px; outline:none;">
+          <button style="background:none; border:none; padding:0 15px; cursor:pointer; color:#1e988a;"><i class="fas fa-search"></i></button>
+        </div>
+        <div style="margin-top: 30px;">
+          <p style="font-weight: 800; font-size: 0.75rem; margin-bottom: 10px; color: #333;">FIND US ON</p>
+          <div class="social-icons">
+            <i class="fab fa-youtube"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-linkedin"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const DISCOUNT_VAL = 448;
+
+    function renderSummary() {
+      const items = JSON.parse(localStorage.getItem('cuddleCart')) || [];
+      const list = document.getElementById('billing-summary-list');
+      list.innerHTML = '';
+
+      let subtotal = 0;
+      let totalQty = 0;
+
+      items.forEach(item => {
+        subtotal += item.price * item.qty;
+        totalQty += item.qty;
+
+        const displayImg = item.img ? item.img.replace('../../jury/', '') : '';
+
+        const el = document.createElement('div');
+        el.className = 'summary-item';
+        el.innerHTML = `
+          <img src="${displayImg}" alt="${item.name}">
+          <div class="summary-item-info">
+            <div class="summary-item-name">${item.name}</div>
+            <div class="summary-item-sub">${item.subtext}</div>
+            <div class="summary-item-price">₹${item.price.toLocaleString()}</div>
+          </div>
+          <div class="summary-item-qty">Qty ${item.qty}</div>
+        `;
+        list.appendChild(el);
+      });
+
+      // Get shipping cost
+      const shippingRadio = document.querySelector('input[name="shipping"]:checked');
+      const shippingCost = shippingRadio ? parseInt(shippingRadio.value) : 0;
+
+      document.getElementById('label-subtotal').innerText = `Subtotal (${totalQty} items)`;
+      document.getElementById('val-subtotal').innerText = `₹${subtotal.toLocaleString()}`;
+      
+      const currentDiscount = items.length > 0 ? DISCOUNT_VAL : 0;
+      const total = Math.max(0, subtotal - currentDiscount + shippingCost);
+      
+      document.getElementById('val-discount').innerText = `-₹${currentDiscount.toLocaleString()}`;
+      document.getElementById('val-shipping').innerText = `₹${shippingCost.toLocaleString()}`;
+      document.getElementById('val-total').innerText = `₹${total.toLocaleString()}`;
+
+      // Live Preview Logic
+      const name = document.getElementById('billing-name').value;
+      const city = document.getElementById('billing-city').value;
+      const addr = document.getElementById('billing-address').value;
+      const phone = document.getElementById('billing-phone').value;
+      const pincode = document.getElementById('billing-pincode').value;
+      const state = document.getElementById('billing-state').value;
+      
+      const previewBox = document.getElementById('live-preview');
+      
+      if (name || city || addr) {
+        previewBox.style.display = 'block';
+        document.getElementById('preview-name').innerText = name || 'User Name';
+        document.getElementById('preview-address').innerHTML = `
+          ${addr || 'Street Address'}<br>
+          ${city || 'City'} - ${pincode || 'Pincode'}, ${state || 'State'}<br>
+          ${phone || '+91 XXXXX XXXXX'}
+        `;
+
+        // Update estimated date based on shipping
+        const shippingVal = parseInt(document.querySelector('input[name="shipping"]:checked').value);
+        const days = shippingVal === 99 ? 1 : 4;
+        const estDate = new Date();
+        estDate.setDate(estDate.getDate() + days);
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        const dateStr = estDate.toLocaleDateString('en-GB', options);
+        document.getElementById('preview-est-date').innerText = (days === 1 ? 'Tomorrow, ' : '') + dateStr;
+
+        autoSaveInfo(); // Auto-save for track order pg
+      } else {
+        previewBox.style.display = 'none';
+      }
+    }
+
+    function autoSaveInfo() {
+      const info = {
+        name: document.getElementById('billing-name').value,
+        email: document.getElementById('billing-email').value,
+        phone: document.getElementById('billing-phone').value,
+        address: document.getElementById('billing-address').value,
+        city: document.getElementById('billing-city').value,
+        pincode: document.getElementById('billing-pincode').value,
+        state: document.getElementById('billing-state').value,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        id: localStorage.getItem('lastOrderId') || ('#CC' + Math.floor(Math.random() * 900000 + 100000))
+      };
+      if (!localStorage.getItem('lastOrderId')) localStorage.setItem('lastOrderId', info.id);
+      localStorage.setItem('cuddleOrderInfo', JSON.stringify(info));
+    }
+
+    function saveOrderAndProceed() {
+      autoSaveInfo();
+      window.location.href = 'order_success.html';
+    }
+
+    function initBillingForm() {
+      const user = JSON.parse(localStorage.getItem('cuddleUser'));
+      if (user) {
+        document.getElementById('billing-name').value = user.name || '';
+        document.getElementById('billing-email').value = user.email || '';
+        document.getElementById('billing-phone').value = user.phone || '';
+      }
+
+      const addrs = JSON.parse(localStorage.getItem('cuddleAddresses')) || [];
+      const list = document.getElementById('saved-addr-list');
+      const picker = document.getElementById('saved-addr-picker');
+
+      if (addrs.length > 0) {
+        picker.style.display = 'block';
+        list.innerHTML = '';
+        addrs.forEach((a, idx) => {
+          const card = document.createElement('div');
+          card.style = "min-width:180px; padding:15px; border:2px solid #c9dfdb; border-radius:15px; background:#fff; cursor:pointer; font-size:0.8rem;";
+          card.innerHTML = `<strong>${a.type}</strong><br>${a.street.substring(0, 20)}...`;
+          card.onclick = () => selectAddress(a);
+          list.appendChild(card);
+        });
+      }
+      renderSummary();
+    }
+
+    function selectAddress(a) {
+      document.getElementById('billing-address').value = a.street;
+      document.getElementById('billing-city').value = a.city;
+      document.getElementById('billing-pincode').value = a.pin;
+      document.getElementById('billing-state').value = a.state || 'Delhi';
+      renderSummary();
+    }
+
+    window.onload = () => {
+      initBillingForm();
+    };
+  </script>
+</body>
+</html>

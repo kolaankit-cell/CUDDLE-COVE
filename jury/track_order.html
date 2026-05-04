@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Order — Cuddle Cove</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Map Library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f1f8f7;
+      color: #333;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    #navbar {
+      background: #1e988a !important;
+      padding: 12px 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-link { color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+
+    .track-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* MAP OVERRIDE */
+    #map {
+      width: 100%;
+      height: 250px;
+      border-radius: 15px;
+      z-index: 1;
+    }
+
+    .inv-header { display:flex; justify-content:space-between; border-bottom:2px solid #333; padding-bottom:20px; margin-bottom:20px; }
+    .inv-table { width:100%; border-collapse:collapse; margin:20px 0; }
+    .inv-table th, .inv-table td { border:1px solid #ddd; padding:10px; text-align:left; }
+    .inv-total { text-align:right; font-size:1.2rem; font-weight:bold; margin-top:20px; }
+
+    /* Search Bar */
+    .track-search {
+      display: flex;
+      gap: 0;
+      margin-bottom: 40px;
+      max-width: 600px;
+    }
+    .track-search input {
+      flex: 1;
+      padding: 15px 25px;
+      border: 1px solid #ddd;
+      border-radius: 12px 0 0 12px;
+      outline: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .track-search button {
+      padding: 15px 30px;
+      background: #1a4d48;
+      color: #fff;
+      border: none;
+      border-radius: 0 12px 12px 0;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* Top Banner Cards */
+    .order-info-banner {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      border: 1px solid #eef;
+    }
+    .info-group .label { font-size: 0.75rem; color: #888; font-weight: 700; margin-bottom: 5px; }
+    .info-group .val { font-family: 'Nunito'; font-weight: 900; font-size: 1.1rem; }
+
+    .track-layout {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 30px;
+    }
+
+    /* Left Card: Status */
+    .status-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      margin-bottom: 30px;
+    }
+    .status-header { margin-bottom: 40px; }
+    .status-badge { font-weight: 800; color: #1e988a; font-size: 1.5rem; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .status-header p { font-size: 0.85rem; color: #777; font-weight: 600; }
+
+    /* Timeline */
+    .status-timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .status-line {
+      position: absolute;
+      top: 18px; left: 10%; right: 10%;
+      height: 2px; background: #eef; z-index: 1;
+    }
+    .status-line-fill {
+      position: absolute;
+      top: 18px; left: 10%; width: 75%;
+      height: 2.5px; background: #1e988a; z-index: 1;
+    }
+    .timeline-step {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      width: 15%; z-index: 2; position: relative;
+    }
+    .step-circle {
+      width: 36px; height: 36px; background: #fff; border: 2px solid #eef;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #999; font-size: 0.9rem;
+    }
+    .timeline-step.completed .step-circle {
+      background: #e6f6f5; border-color: #1e988a; color: #1e988a;
+    }
+    .timeline-step.active .step-circle {
+      background: #1e988a; border-color: #1e988a; color: #fff; box-shadow: 0 4px 10px rgba(30,152,138,0.3);
+    }
+    .timeline-step .label { font-size: 0.65rem; font-weight: 800; text-align: center; color: #888; }
+    .timeline-step.completed .label, .timeline-step.active .label { color: #000; }
+    .timeline-step .date { font-size: 0.6rem; color: #aaa; font-weight: 700; margin-top: 2px; }
+
+    /* Address Card (Right) */
+    .address-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      margin-bottom: 30px;
+    }
+    .card-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .card-title h3 { font-family: 'Nunito'; font-weight: 900; font-size: 1.1rem; }
+    .card-title .change { color: #4b8b86; font-size: 0.8rem; font-weight: 800; text-decoration: none; }
+
+    .addr-info { display: flex; gap: 15px; margin-bottom: 25px; }
+    .addr-info i { color: #1e988a; font-size: 1.1rem; margin-top: 3px; }
+    .addr-details .name { font-weight: 800; font-size: 0.9rem; margin-bottom: 5px; display: block; }
+    .addr-details .text { font-size: 0.8rem; color: #666; line-height: 1.5; font-weight: 600; display: block; }
+
+    /* Items Section */
+    .order-items-card { grid-column: 1 / 2; background: #fff; border-radius: 20px; padding: 30px; }
+    .items-list { display: flex; flex-direction: column; gap: 20px; }
+    .item-row { display: flex; align-items: center; gap: 20px; position: relative; }
+    .item-row img { width: 90px; height: 90px; object-fit: contain; background: #fdfdfd; border-radius: 12px; }
+    .item-row .info { flex: 1; }
+    .item-name { font-family: 'Nunito'; font-weight: 900; font-size: 1rem; margin-bottom: 4px; }
+    .item-sub { font-size: 0.75rem; color: #888; }
+    .item-price { font-weight: 900; font-size: 1.1rem; margin-top: 8px; }
+    .item-qty { position: absolute; right: 0; bottom: 0; font-size: 0.75rem; font-weight: 700; color: #888; }
+
+    /* Delivery Partner & Map */
+    .tracking-map-card { grid-column: 2 / 3; background: #fff; border-radius: 20px; padding: 25px; }
+    .partner-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+    .partner-details { display: flex; gap: 12px; align-items: center; }
+    .partner-logo { width: 44px; height: 44px; background: #1e988a; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; }
+    .partner-name { font-weight: 900; font-size: 0.95rem; }
+    .partner-id { font-size: 0.75rem; color: #888; font-weight: 700; margin-top: 2px; }
+    .btn-white { padding: 8px 15px; border: 1.5px solid #1e988a; color: #1e988a; border-radius: 99px; background: none; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+
+    .map-placeholder {
+      width: 100%; height: 200px; background: #f9fbfb; border-radius: 15px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid #eef;
+    }
+    .map-path { position: absolute; width: 80%; height: 60%; border-left: 3px dashed #1e988a; border-bottom: 3px dashed #1e988a; border-radius: 0 0 0 20px; transform: rotate(-5deg); }
+    .map-truck { position: absolute; bottom: 30%; left: 30%; font-size: 1.2rem; color: #1e988a; }
+    .map-home { position: absolute; bottom: 10px; right: 20px; font-size: 1.5rem; color: #1e988a; }
+
+    /* Footer */
+    .site-footer { background: #8cd4cd !important; padding: 40px 20px 20px !important; margin-top: 80px; }
+
+    @media (max-width: 900px) {
+      .track-layout { grid-template-columns: 1fr; }
+      .order-items-card, .tracking-map-card { grid-column: 1 / 2; }
+      .order-info-banner { flex-direction: column; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-icon-btn"><i class="fas fa-search"></i></button>
+        <button class="nav-icon-btn"><i class="fas fa-heart"></i></button>
+        <a href="user_profile.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a href="payment_cart.html" class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="track-container">
+    <!-- SEARCH SECTION -->
+    <div class="track-search">
+      <input type="text" id="track-input" placeholder="ENTER ORDER ID OR EMAIL ADDRESS" onkeyup="if(event.key==='Enter') handleSearch()">
+      <button onclick="handleSearch()">TRACK ORDER</button>
+    </div>
+
+    <!-- ORDER SUMMARY BANNER -->
+    <div class="order-info-banner">
+      <div class="info-group">
+        <div class="label">Order ID:</div>
+        <div class="val" id="display-order-id">#CC123456</div>
+      </div>
+      <div class="info-group">
+          <div class="label">Order Date:</div>
+          <div class="val" id="display-order-date">4 May 2026</div>
+        </div>
+        <div class="info-group">
+          <div class="label">Total Amount:</div>
+          <div class="val" id="display-total-amount">₹1,498</div>
+        </div>
+        <div class="info-group">
+          <div class="label">Payment Method:</div>
+          <div class="val">UPI</div>
+        </div>
+        <div class="info-group" style="display:flex; align-items:center;">
+          <button onclick="window.location.href='invoice.html'" style="background:none; border:none; color:#1e988a; font-size:0.75rem; font-weight:800; cursor:pointer;"><i class="fas fa-file-download"></i> Download Invoice</button>
+        </div>
+      </div>
+  
+      <div class="track-layout">
+        <!-- LEFT: STATUS & ITEMS -->
+        <div class="left-col">
+          <div class="status-card">
+            <div class="status-header">
+              <div class="status-badge">Out for Delivery <i class="fas fa-truck-moving"></i></div>
+              <p>Your order is out for delivery and will reach you soon.</p>
+            </div>
+  
+            <div class="status-timeline">
+              <div class="status-line"></div>
+              <div class="status-line-fill"></div>
+              
+              <div class="timeline-step completed">
+                <div class="step-circle"><i class="fas fa-clipboard-list"></i></div>
+                <div class="label">Order Placed</div>
+                <div class="date" id="date-placed">4 May 2026</div>
+              </div>
+              <div class="timeline-step completed">
+                <div class="step-circle"><i class="fas fa-check-circle"></i></div>
+                <div class="label">Confirmed</div>
+                <div class="date" id="date-confirmed">4 May 2026</div>
+              </div>
+              <div class="timeline-step completed">
+                <div class="step-circle"><i class="fas fa-box-open"></i></div>
+                <div class="label">Packed</div>
+                <div class="date" id="date-packed">5 May 2026</div>
+              </div>
+              <div class="timeline-step completed">
+                <div class="step-circle"><i class="fas fa-truck-moving"></i></div>
+                <div class="label">Shipped</div>
+                <div class="date" id="date-shipped">6 May 2026</div>
+              </div>
+              <div class="timeline-step active">
+                <div class="step-circle"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="label">Out for Delivery</div>
+                <div class="date" id="date-ofd">6 May 2026</div>
+              </div>
+            </div>
+  
+            <div style="background: #e6f6f5; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+              <i class="fas fa-map-marker-alt" style="color:#1e988a; font-size: 1.2rem;"></i>
+              <p style="font-size: 0.8rem; font-weight: 700; color: #4b8b86;">Our delivery partner is nearby. Your order will be delivered today.</p>
+            </div>
+          </div>        <div class="order-items-card">
+          <h3 style="font-family:'Nunito'; font-weight:900; margin-bottom:25px;">order items(<span id="item-count">3</span>)</h3>
+          <div class="items-list" id="tracking-items-list">
+             <!-- Populated by JS -->
+          </div>
+
+          <div style="margin-top: 35px; border-top: 1px solid #eee; padding-top: 25px;">
+             <h3 style="font-family:'Nunito'; font-weight:900; font-size:1.1rem; margin-bottom:15px;">Price Details</h3>
+             <div id="price-details-container">
+               <!-- Populated by JS -->
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ADDRESS & MAP -->
+      <div class="right-col">
+        <div class="address-card">
+          <div class="card-title">
+            <h3>Delivery Address</h3>
+            <a href="billing.html" class="change">Change</a>
+          </div>
+          <div class="addr-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="addr-details">
+              <span class="name" id="display-user-name">Guest User</span>
+              <span class="text" id="display-user-address">Please complete checkout to see details.</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid #eee; padding-top: 25px;">
+             <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                <i class="far fa-calendar-alt" style="color:#1e988a;"></i>
+                <span style="font-size: 0.8rem; font-weight: 800; color:#888;">Estimated Delivery</span>
+             </div>
+             <div style="font-family:'Nunito'; font-weight:900; font-size:1.1rem; color:#1e988a; margin-bottom:2px;" id="estimated-date">Today, 6 May 2026</div>
+             <div style="font-size:0.75rem; color:#888; font-weight:700;">by 8:00 PM</div>
+          </div>
+
+          <div style="background: #eef7f6; margin-top:25px; padding:15px; border-radius:12px; display:flex; align-items:center; gap:12px;">
+             <i class="fas fa-shield-alt" style="color: #4b8b86; font-size: 1.2rem;"></i>
+             <p style="font-size:0.7rem; font-weight:700; color:#4b8b86;">Your order is in safe hands! We'll update you at every step.</p>
+          </div>
+        </div>
+
+        <div class="tracking-map-card">
+          <div class="card-title">
+            <h3>Delivery Partner</h3>
+          </div>
+          <div class="partner-info">
+            <div class="partner-details">
+              <div class="partner-logo">SF</div>
+              <div>
+                <div class="partner-name">ShipFast</div>
+                <div class="partner-id">SF123456789IN</div>
+              </div>
+            </div>
+            <button class="btn-white"><i class="fas fa-phone-alt"></i> Call Partner</button>
+          </div>
+
+          <div style="margin-bottom:15px;">
+             <div style="font-weight:800; font-size:0.85rem; margin-bottom:5px;">Live Tracking</div>
+             <div style="font-size:0.75rem; color:#1e988a; font-weight:700;">Your order is on the way</div>
+          </div>
+
+          <div id="map"></div>
+          <p style="font-size:0.6rem; color:#888; margin-top:10px;">Last updated: Just now <i class="fas fa-sync-alt fa-spin"></i></p>
+        </div>
+
+        <!-- HELP BANNER -->
+        <div style="background: linear-gradient(135deg, #f9fdfe 0%, #fff 100%); border-radius: 20px; padding: 30px; margin-top: 30px; border: 1px solid #eef; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+           <div style="background:#f9c6d0; width:65px; height:65px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem;">🎧</div>
+           <div style="flex:1;">
+             <h3 style="font-family:'Nunito'; font-weight:900; font-size:1.2rem; margin-bottom:5px;">Need Help?</h3>
+             <p style="font-size:0.7rem; font-weight:700; color:#888; margin-bottom:15px;">We're here for you! Reach out to our support team for any queries.</p>
+             <button style="background:#1e988a; color:#fff; border:none; padding:10px 20px; border-radius:99px; font-weight:800; font-size:0.75rem; cursor:pointer;"><i class="far fa-comment-dots"></i> Contact Support</button>
+           </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 20px;">
+       <div style="text-align:left">
+          <h4 style="font-weight:700;margin-bottom:15px">About Us</h4>
+          <ul style="list-style:none;padding:0;color:#333;font-size:0.85rem;line-height:2">
+            <li>Our Story</li>
+            <li>Why Choose Us</li>
+          </ul>
+       </div>
+       <div style="text-align:left">
+          <h4 style="font-weight:700;margin-bottom:15px">Support</h4>
+          <ul style="list-style:none;padding:0;color:#333;font-size:0.85rem;line-height:2">
+            <li>Help Center</li>
+            <li>Returns & Refunds</li>
+          </ul>
+       </div>
+       <div style="text-align:left">
+          <h4 style="font-weight:700;margin-bottom:15px">Contact</h4>
+          <p style="color:#333;font-size:0.85rem;line-height:2">+91 XXXXX XXXXX<br>hello@cuddlecove.com</p>
+       </div>
+       <div style="text-align:left">
+          <h4 style="font-weight:700;margin-bottom:15px; font-size:0.75rem;">SIGN UP FOR OUR NEWSLETTER</h4>
+          <div style="display:flex; background:#fff; border-radius:30px; padding:5px; border:1px solid #ccc;">
+            <input type="text" style="border:none;flex:1;padding:5px 10px;outline:none;">
+            <button style="background:none;border:none;color:#1e988a"><i class="fas fa-search"></i></button>
+          </div>
+       </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadOrderData();
+      try { initMap(); } catch(e) { console.warn('Map init failed:', e); }
+    });
+
+    function handleSearch() {
+      const input = document.getElementById('track-input').value.trim();
+      if (!input) {
+        alert('Please enter an Order ID or Email.');
+        return;
+      }
+      const savedInfo = JSON.parse(localStorage.getItem('cuddleOrderInfo'));
+      if (savedInfo && (input.toUpperCase() === savedInfo.id.toUpperCase() || input.toLowerCase() === savedInfo.email.toLowerCase())) {
+        loadOrderData(savedInfo);
+        alert('Order details found!');
+      } else {
+        alert('No order found with that ID or Email. Showing recent demo data.');
+        loadOrderData();
+      }
+    }
+
+    function loadOrderData(customInfo = null) {
+      let info;
+      try {
+        const stored = localStorage.getItem('cuddleOrderInfo');
+        info = customInfo || (stored ? JSON.parse(stored) : null);
+        
+        if (!info || !info.name) {
+          info = {
+            name: 'Guest User',
+            id: localStorage.getItem('lastOrderId') || '#CC888888',
+            date: '4 May 2026',
+            address: 'No address entered yet',
+            city: 'City',
+            pincode: '000000',
+            state: 'State',
+            phone: '+91 XXXXX XXXXX',
+            email: 'user@example.com'
+          };
+        }
+      } catch (e) {
+        console.error('Data loading error:', e);
+        info = { name: 'Guest User', id: '#CC888888', date: '4 May 2026', address: 'Error' };
+      }
+      
+      const cart = JSON.parse(localStorage.getItem('cuddleCart')) || [];
+      document.getElementById('display-order-id').innerText = info.id || '#CC888888';
+      document.getElementById('display-order-date').innerText = info.date;
+      document.getElementById('display-user-name').innerText = info.name;
+      
+      const formattedAddr = `${info.address || 'Address'}<br>${info.city || 'City'}${info.pincode ? ' - ' + info.pincode : ''}, ${info.state || 'State'}<br>${info.phone || 'N/A'}`;
+      document.getElementById('display-user-address').innerHTML = formattedAddr;
+      
+      const est = new Date();
+      est.setDate(est.getDate() + 1);
+      const estStr = est.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      document.getElementById('estimated-date').innerText = `Today, ${estStr}`;
+
+      document.getElementById('date-placed').innerText = info.date;
+      document.getElementById('date-confirmed').innerText = info.date;
+      document.getElementById('date-ofd').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      const list = document.getElementById('tracking-items-list');
+      document.getElementById('item-count').innerText = cart.length;
+      list.innerHTML = '';
+
+      if (cart.length > 0) {
+        let subtotal = 0;
+        cart.forEach(item => {
+          subtotal += item.price * item.qty;
+          const imgPath = item.img ? item.img.replace('../../jury/', '') : '';
+          const row = document.createElement('div');
+          row.className = 'item-row';
+          row.innerHTML = `
+            <img src="${imgPath}" alt="${item.name}">
+            <div class="info">
+              <div class="item-name">${item.name}</div>
+              <div class="item-sub">${item.subtext || 'Premium Soft Toy'}</div>
+              <div class="item-price">₹${item.price.toLocaleString()}</div>
+            </div>
+            <div class="item-qty">Qty ${item.qty}</div>
+          `;
+          list.appendChild(row);
+        });
+        
+        const discount = 448;
+        const total = Math.max(0, subtotal - discount);
+        document.getElementById('display-total-amount').innerText = `₹${total.toLocaleString()}`;
+        document.getElementById('price-details-container').innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Subtotal</span><span>₹${subtotal.toLocaleString()}</span></div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#2ecc71;"><span>Discount</span><span>-₹${discount.toLocaleString()}</span></div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#2ecc71;"><span>Shipping</span><span>FREE</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:1.5rem; font-weight:900; margin-top:20px; border-top:2px solid #eee; padding-top:15px;">
+            <span>Total Amount</span><span>₹${total.toLocaleString()}</span>
+          </div>
+        `;
+      } else {
+        list.innerHTML = '<p style="color:#888;">No items in cart.</p>';
+        document.getElementById('price-details-container').innerHTML = '<p>N/A</p>';
+      }
+    }
+
+    function initMap() {
+      setTimeout(() => {
+        const map = L.map('map').setView([19.0760, 72.8777], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([19.0760, 72.8777]).addTo(map).bindPopup('Warehouse').openPopup();
+        L.marker([19.0860, 72.8877]).addTo(map).bindPopup('Delivery Address');
+        const truckIcon = L.divIcon({ html: '<i class="fas fa-truck-moving" style="color: #1e988a; font-size: 24px;"></i>', className: 'custom-div-icon' });
+        L.marker([19.0800, 72.8800], { icon: truckIcon }).addTo(map);
+      }, 500);
+    }
+
+    function generateInvoice() {
+      window.location.href = 'invoice.html';
+    }
+  </script>
+</body>
+</html>

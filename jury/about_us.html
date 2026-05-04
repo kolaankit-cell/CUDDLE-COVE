@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — Cuddle Cove</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f7fcfe;
+      color: #333;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    #navbar {
+      background: #1e988a !important;
+      padding: 12px 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-link { color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+    .nav-link.active { border-bottom: 2px solid #fff; }
+
+    /* About Hero */
+    .about-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      background: linear-gradient(135deg, #e3f6f5 0%, #ffffff 100%);
+      padding: 80px 10%;
+      min-height: 500px;
+      overflow: hidden;
+    }
+    .about-hero-text { z-index: 2; }
+    .about-hero-text .subtitle { color: #1e988a; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .about-hero-text h1 { font-family: 'Nunito'; font-weight: 900; font-size: 3.5rem; line-height: 1.1; margin-bottom: 25px; color: #1a3a38; text-transform: uppercase; }
+    .about-hero-text p { font-size: 1.1rem; color: #555; max-width: 500px; line-height: 1.6; margin-bottom: 30px; }
+    .about-hero-img { display: flex; justify-content: center; }
+    .about-hero-img img { width: 110%; transform: rotate(-5deg); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1)); }
+
+    /* Mission */
+    .mission-section { text-align: center; padding: 100px 10%; background: #fff; }
+    .mission-section h2 { font-family: 'Nunito'; font-weight: 900; font-size: 2.5rem; margin-bottom: 20px; }
+    .mission-section p { font-size: 1.2rem; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+    /* Story Section */
+    .story-section { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; padding: 100px 10%; align-items: center; }
+    .story-img img { width: 100%; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+    .story-text h3 { font-family: 'Nunito'; font-weight: 900; font-size: 2rem; margin-bottom: 20px; }
+    .story-text p { color: #555; font-size: 1rem; line-height: 1.8; margin-bottom: 25px; }
+
+    .btn-teal {
+      background: #1e988a; color: #fff; padding: 14px 30px; border-radius: 99px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s;
+    }
+    .btn-teal:hover { background: #167d71; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(30,152,138,0.2); }
+
+    /* Why Choose Us */
+    .why-section { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; padding: 100px 10%; background: #fbfdfd; }
+    .why-grid { display: flex; flex-direction: column; gap: 30px; }
+    .why-item { display: flex; gap: 20px; align-items: flex-start; }
+    .why-icon { background: #fff; width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #1e988a; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .why-info h4 { font-family: 'Nunito'; font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; }
+    .why-info p { font-size: 0.9rem; color: #666; line-height: 1.4; }
+
+    /* Team Section */
+    .team-section { padding: 100px 10%; text-align: center; }
+    .team-section h3 { font-family: 'Nunito'; font-weight: 900; font-size: 2rem; margin-bottom: 50px; display: flex; align-items: center; justify-content: center; gap: 15px; }
+    .team-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 30px; 
+      max-width: 1100px;
+      margin: 0 auto;
+      justify-items: center; /* CENTER CARDS IN CELLS */
+    }
+    .team-card { 
+      background: #e3f6f5; 
+      border-radius: 40px; 
+      padding: 50px 30px; 
+      text-align: center; 
+      transition: 0.3s; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 340px;   /* FIXED WIDTH */
+      height: 580px;  /* FIXED HEIGHT */
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    .team-card:hover { transform: translateY(-10px); background: #d1eded; }
+    .team-img { 
+      width: 200px;   /* FIXED SIZE FOR ALL */
+      height: 200px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      margin-bottom: 25px; 
+      border: 8px solid #fff; 
+      background: #fff;
+    }
+    .team-name { font-family: 'Nunito'; font-weight: 900; font-size: 1.2rem; }
+    .team-role { font-weight: 700; font-size: 0.8rem; color: #1e988a; text-transform: uppercase; margin-bottom: 15px; display: block; }
+    .team-bio { font-size: 0.85rem; color: #555; line-height: 1.5; }
+
+    /* Stats Section */
+    .stats-banner { background: #e3f6f5; padding: 40px 10%; display: flex; justify-content: space-between; border-radius: 20px; margin: 60px 10%; align-items: center; border: 1px solid #c9dfdb; }
+    .stat-item { display: flex; align-items: center; gap: 15px; }
+    .stat-icon { font-size: 2rem; color: #4b8b86; }
+    .stat-info .num { font-family: 'Nunito'; font-weight: 900; font-size: 1.5rem; display: block; }
+    .stat-info .label { font-size: 0.8rem; font-weight: 700; color: #666; }
+
+    /* Spread Cuddles Banner */
+    .bottom-banner { background: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1200') center/cover; padding: 80px 10%; border-radius: 30px; margin: 60px 10%; display: flex; justify-content: space-between; align-items: center; color: #1a3a38; position: relative; overflow: hidden; }
+    .bottom-banner::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); z-index:1; }
+    .banner-text { position:relative; z-index:2; }
+    .banner-text h2 { font-family: 'Nunito'; font-weight: 900; font-size: 2.5rem; margin-bottom: 10px; }
+    .banner-text p { font-size: 1.1rem; font-weight: 700; opacity: 0.8; }
+    .banner-action { position:relative; z-index:2; }
+
+    /* Footer */
+    .site-footer { background: #8cd4cd !important; padding: 40px 20px 20px !important; margin-top: 80px; }
+    .footer-col h4 { font-family: 'Quicksand', sans-serif; font-weight: 700; color: #000 !important; margin-bottom: 15px; }
+
+    @media (max-width: 900px) {
+      .about-hero, .story-section, .why-section, .team-grid { grid-template-columns: 1fr; }
+      .about-hero-img img { width: 80%; transform: none; margin-top: 40px; }
+      .stats-banner { flex-direction: column; gap: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px; border-radius: 50%;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link active">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="nav-icon-btn"><i class="fas fa-search"></i></div>
+        <a href="user_profile.html?tab=wishlist" class="nav-icon-btn"><i class="far fa-heart"></i></a>
+        <a id="user-nav-link" href="user_profile.html" class="nav-icon-btn"><i class="far fa-user"></i></a>
+        <a id="cart-nav-link" href="payment_cart.html" class="nav-icon-btn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" id="cart-badge">3</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="about-hero">
+      <div class="about-hero-text">
+        <div class="subtitle">✨ ABOUT US ✨</div>
+        <h1>Made with Love,<br>For Endless Cuddles</h1>
+        <p>At Cuddle Cove, we believe every cuddle creates a little happiness. Our soft and adorable plush toys are designed to bring comfort, joy, and a lifetime of sweet memories.</p>
+        <a href="#our-story" class="btn-teal"><i class="fas fa-heart"></i> Our Story</a>
+      </div>
+      <div class="about-hero-img">
+        <img src="images/about_hero.png" alt="Cuddle Cove Plushes">
+      </div>
+    </section>
+
+    <!-- MISSION -->
+    <section class="mission-section">
+      <h2>Our Mission</h2>
+      <p>To create the softest companions that spark imagination, inspire kindness, and stay with you through every moment of life.</p>
+    </section>
+
+    <!-- OUR STORY -->
+    <section class="story-section" id="our-story">
+      <div class="story-img">
+        <img src="https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800" alt="Child hugging bear">
+      </div>
+      <div class="story-text">
+        <h3>Our Story</h3>
+        <p>Cuddle Cove began with a simple dream — to bring comfort and smiles to children everywhere. What started as a small passion project has grown into a brand loved by thousands of families.</p>
+        <p>From the softest fabrics to the sweetest designs, every Cuddle Cove toy is made to be a forever friend.</p>
+        <a href="#" class="btn-teal">Learn More About Us <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="why-section">
+      <div class="why-info-main">
+        <h2 style="font-family:'Nunito'; font-weight:900; font-size:2.5rem; margin-bottom:40px;">⭐ Why Choose Cuddle Cove ?</h2>
+        <div class="why-grid">
+          <div class="why-item">
+            <div class="why-icon"><i class="fas fa-users"></i></div>
+            <div class="why-info">
+              <h4>Loved by Thousands</h4>
+              <p>Trusted by parents and kids across the country.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="why-info">
+              <h4>Hassle Free Shopping</h4>
+              <p>Easy returns, secure payments, and great support.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon"><i class="fas fa-truck"></i></div>
+            <div class="why-info">
+              <h4>Fast & Reliable Delivery</h4>
+              <p>Your cuddles reach you quickly and safely.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon"><i class="fas fa-headset"></i></div>
+            <div class="why-info">
+              <h4>24/7 Customer Support</h4>
+              <p>We're here to help you anytime, always.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="team-section">
+        <h3>💜 Meet the Heart Behind Cuddle Cove</h3>
+        <div class="team-grid">
+          <div class="team-card">
+            <img src="images/_ANK8048.JPG" class="team-img" alt="Founder">
+            <span class="team-role">CEO AND FOUNDER</span>
+            <div class="team-name">Ankit Kola 👑</div>
+            <p class="team-bio">The visionary who started Cuddle Cove with a simple idea — to spread comfort through every cuddle.</p>
+          </div>
+          <div class="team-card">
+            <img src="images/DIVYESH.png" class="team-img" alt="Creative">
+            <span class="team-role">Creative Director</span>
+            <div class="team-name">Divyesh Sadmake 🎨</div>
+            <p class="team-bio">The creative mind behind our adorable designs. Bringing each character to life with charm.</p>
+          </div>
+          <div class="team-card">
+            <img src="images/YASH.jpeg" class="team-img" alt="Happiness">
+            <span class="team-role">Head of Happiness</span>
+            <div class="team-name">Yash Raj ✨</div>
+            <p class="team-bio">Ensuring every customer experience feels as warm as our toys. Dedicated to your joy.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-banner">
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+        <div class="stat-info"><span class="num">50K+</span><span class="label">Happy Customers</span></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-teddy-bear"></i><span style="font-size:1.5rem">🧸</span></div>
+        <div class="stat-info"><span class="num">100+</span><span class="label">Cuddly Products</span></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-info"><span class="num">4.8/5</span><span class="label">Customer Rating</span></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-globe"></i></div>
+        <div class="stat-info"><span class="num">Pan India</span><span class="label">Delivery</span></div>
+      </div>
+    </div>
+
+    <!-- SPREAD CUDDLES -->
+    <section class="bottom-banner">
+      <div class="banner-text">
+        <h2>Let's Spread More Cuddles!</h2>
+        <p>Thank you for being a part of our journey. <i class="fas fa-arrow-right"></i></p>
+      </div>
+      <div class="banner-action">
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="btn-teal" style="font-size:1.2rem; padding:18px 40px;">Shop Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+      <div class="footer-col" style="text-align: left;">
+        <h4>About Us</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="about_us.html">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+          <li><a href="#">Customer Reviews</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4>Support</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Shipping & Delivery</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4 style="font-size: 0.75rem; letter-spacing: 1px; color: #333 !important;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div style="display:flex; margin-top:10px; background:#fff; border-radius:30px; overflow:hidden; padding:2px; border:1px solid #ccc; max-width:300px;">
+          <input type="text" style="flex:1; border:none; padding:8px 15px; outline:none;">
+          <button style="background:none; border:none; padding:0 15px; cursor:pointer; color:#1e988a;"><i class="fas fa-search"></i></button>
+        </div>
+        <div style="margin-top: 30px;">
+          <p style="font-weight: 800; font-size: 0.75rem; margin-bottom: 10px; color: #333;">FIND US ON</p>
+          <div class="social-icons">
+             <a href="#" style="color:#333"><i class="fab fa-youtube"></i></a>
+             <a href="#" style="color:#333"><i class="fab fa-twitter"></i></a>
+             <a href="#" style="color:#333"><i class="fab fa-instagram"></i></a>
+             <a href="#" style="color:#333"><i class="fab fa-facebook"></i></a>
+             <a href="#" style="color:#333"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (isLoggedIn === 'true') {
+        document.getElementById('user-nav-link').href = 'user_profile.html';
+      } else {
+        document.getElementById('user-nav-link').href = 'sign_in.html';
+      }
+    });
+  </script>
+</body>
+</html>

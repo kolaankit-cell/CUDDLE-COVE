@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | Cuddle Cove</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #1e988a;
+      --primary-light: #e5f4ef;
+      --primary-dark: #166e64;
+      --secondary: #f9c6d0;
+      --bg: #f5fafd;
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border: #edf2f7;
+      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; transition: 0.3s; }
+    ul { list-style: none; }
+
+    /* NAVBAR */
+    #navbar { background: var(--primary); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-logo img { height: 45px; cursor: pointer; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-link { color: #fff; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 20px; color: #fff; font-size: 1.2rem; align-items: center; }
+    .nav-icon-btn { cursor: pointer; position: relative; }
+    .cart-badge { position: absolute; top: -8px; right: -10px; background: #e74c3c; color: #fff; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: 700; }
+
+    /* LAYOUT */
+    .profile-container { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: 280px 1fr; gap: 30px; padding: 0 20px; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 25px; }
+    .user-card { background: var(--card-bg); border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .user-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 80px; background: var(--primary-light); z-index: 0; }
+    .profile-img-wrap { position: relative; z-index: 1; margin-bottom: 15px; }
+    .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; object-fit: cover; background: #eee; }
+    .user-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; }
+    .user-email { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; }
+    .premium-badge { background: #fff5e6; color: #d68910; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #fbeeb8; }
+
+    .sidebar-menu { background: var(--card-bg); border-radius: 20px; padding: 15px 0; box-shadow: var(--shadow); }
+    .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 25px; font-size: 0.9rem; font-weight: 600; color: #667085; border-left: 4px solid transparent; transition: 0.2s; cursor: pointer; }
+    .menu-item i { font-size: 1.1rem; width: 20px; text-align: center; }
+    .menu-item:hover { background: #f8fafc; color: var(--primary); }
+    .menu-item.active { background: var(--primary); color: #fff; border-left-color: var(--primary-dark); }
+
+    .reward-card { background: var(--card-bg); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); }
+    .piggy-icon { width: 60px; margin-bottom: 10px; }
+    .reward-points { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.8rem; color: var(--text-dark); margin: 5px 0; }
+    .reward-btn { background: var(--primary); color: #fff; padding: 10px; width: 100%; border-radius: 12px; font-weight: 700; font-size: 0.85rem; border: none; margin-top: 15px; cursor: pointer; }
+
+    /* MAIN CONTENT */
+    .main-content { display: flex; flex-direction: column; gap: 25px; }
+    .header-box { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+    .icon-box { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .header-text h1 { font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 800; }
+    .header-text p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; gap: 25px; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .content-card { background: var(--card-bg); border-radius: 20px; padding: 30px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    .card-header i { color: var(--primary); font-size: 1.1rem; }
+    .card-header h2 { font-size: 1.1rem; font-weight: 800; flex: 1; }
+
+    /* OVERVIEW STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .stat-item { background: #fcfdfe; border: 1px solid var(--border); padding: 20px; border-radius: 15px; text-align: center; }
+    .stat-val { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.8rem; color: var(--primary); display: block; }
+    .stat-lbl { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* LIST ITEMS */
+    .item-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid var(--border); border-radius: 15px; margin-bottom: 12px; transition: 0.3s; }
+    .item-row:hover { border-color: var(--primary); background: #fcfdfe; }
+    .item-info { display: flex; align-items: center; gap: 15px; }
+    .item-img { width: 50px; height: 50px; object-fit: contain; background: #fff; border-radius: 10px; }
+    .item-title { font-weight: 800; font-size: 0.95rem; }
+    .item-subtitle { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .item-action { color: var(--primary); font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+    .status-badge { font-size: 0.7rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: var(--primary-light); color: var(--primary); text-transform: uppercase; }
+
+    /* GRID FOR WISHLIST/ADDRESS */
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .grid-card { background: #fff; border: 1px solid var(--border); border-radius: 15px; padding: 20px; position: relative; text-align: center; transition: 0.3s; }
+    .grid-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--shadow); }
+    .wish-remove { position: absolute; top: 10px; right: 10px; color: #e74c3c; cursor: pointer; }
+
+    /* FOOTER */
+    .site-footer { background: #8cd4cd; padding: 60px 0 30px; margin-top: 50px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; padding: 0 20px; }
+    .footer-col h4 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 20px; color: #000; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { font-size: 0.85rem; font-weight: 600; color: #333; }
+    .footer-bottom { text-align: center; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 40px; padding-top: 20px; font-size: 0.75rem; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); z-index:2000; display:none; align-items:center; justify-content:center; }
+    .modal-card { background:white; width:90%; max-width:450px; border-radius:20px; padding:30px; position:relative; }
+    .modal-card h3 { font-family:'Nunito'; margin-bottom:20px; }
+    .form-group { display:flex; flex-direction:column; gap:8px; margin-bottom:15px; }
+    .form-group label { font-size:0.75rem; font-weight:800; color:#94a3b8; }
+    .form-input { border:1px solid #e2e8f0; padding:12px; border-radius:10px; font-family:inherit; font-size:0.85rem; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'">
+        <img src="LOGO/logo.png" alt="Logo">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="javascript:enter3DWorld()" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="nav-icon-btn"><i class="fas fa-search"></i></div>
+        <a href="user_profile.html?tab=wishlist" class="nav-icon-btn"><i class="far fa-heart"></i></a>
+        <div class="nav-icon-btn"><i class="fas fa-user"></i></div>
+        <a href="payment_cart.html" class="nav-icon-btn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" id="cart-nav-badge">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="user-card">
+        <div class="profile-img-wrap">
+          <img src="images/_ANK8048.JPG" alt="Ankit Kola" class="profile-img" id="side-avatar">
+        </div>
+        <h2 class="user-name" id="side-name">Ankit Kola</h2>
+        <p class="user-email" id="side-email">kolaankit@gmail.com</p>
+        <div class="premium-badge"><i class="fas fa-crown"></i> Premium Member</div>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="menu-item active" data-tab="tab-overview"><i class="far fa-user"></i> My Profile</li>
+        <li class="menu-item" data-tab="tab-orders"><i class="fas fa-box"></i> My Orders</li>
+        <li class="menu-item" data-tab="tab-wishlist"><i class="far fa-heart"></i> My Wishlist</li>
+        <li class="menu-item" data-tab="tab-addresses"><i class="fas fa-location-dot"></i> My Addresses</li>
+        <li class="menu-item" data-tab="tab-payments"><i class="far fa-credit-card"></i> Payment Methods</li>
+        <li class="menu-item" data-tab="tab-rewards"><i class="fas fa-gift"></i> My Rewards</li>
+        <li class="menu-item" onclick="window.location.href='account_settings.html'"><i class="fas fa-gear"></i> Account Settings</li>
+        <li class="menu-item" id="logout-btn"><i class="fas fa-arrow-right-from-bracket"></i> Logout</li>
+      </ul>
+
+      <div class="reward-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3200/3200832.png" alt="Piggy" class="piggy-icon">
+        <p style="font-size: 0.75rem; font-weight: 700; color: #888;">You have</p>
+        <p class="reward-points" id="side-points">450</p>
+        <p style="font-size: 0.75rem; font-weight: 800; color: #888;">Reward Points</p>
+        <button class="reward-btn" onclick="switchTab('tab-rewards')">View Rewards &rarr;</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- TAB: OVERVIEW -->
+      <div id="tab-overview" class="tab-content active">
+        <div class="header-box">
+          <div class="icon-box"><i class="far fa-user"></i></div>
+          <div class="header-text">
+            <h1>Account Overview</h1>
+            <p>Welcome back, <span id="welcome-name">User</span>!</p>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="stats-grid">
+            <div class="stat-item"><span class="stat-val">12</span><span class="stat-lbl">Orders</span></div>
+            <div class="stat-item"><span class="stat-val" id="over-wish-count">0</span><span class="stat-lbl">Wishlist</span></div>
+            <div class="stat-item"><span class="stat-val">450</span><span class="stat-lbl">Points</span></div>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header"><i class="fas fa-truck-fast"></i><h2>Quick Track</h2></div>
+          <div class="item-row" onclick="window.location.href='track_order.html'" style="cursor:pointer;">
+             <div class="item-info">
+               <img src="../SOFT TOYS/cuddle-cove/images/bear.png" class="item-img" />
+               <div><div class="item-title">Order #CC55902</div><div class="item-subtitle">Arriving tomorrow by 8 PM</div></div>
+             </div>
+             <span class="status-badge">Shipping</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: ORDERS -->
+      <div id="tab-orders" class="tab-content">
+        <div class="header-box">
+          <div class="icon-box"><i class="fas fa-box"></i></div>
+          <div class="header-text"><h1>My Orders</h1><p>Check the status of your recent cuddles</p></div>
+        </div>
+        <div class="content-card">
+          <div class="item-row">
+            <div class="item-info">
+              <img src="../SOFT TOYS/cuddle-cove/images/giraffe.png" class="item-img" />
+              <div><div class="item-title">Order #CC55902</div><div class="item-subtitle">Placed on 3 May, 2026</div></div>
+            </div>
+            <span class="status-badge">Processing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: WISHLIST -->
+      <div id="tab-wishlist" class="tab-content">
+        <div class="header-box"><div class="icon-box"><i class="far fa-heart"></i></div><div class="header-text"><h1>My Wishlist</h1><p>Items you've hearted for later</p></div></div>
+        <div class="content-card">
+           <div class="grid-container" id="wishlist-container"></div>
+           <div id="wish-empty" style="text-align:center; padding:40px; display:none;">
+              <p style="font-weight:700; color:#888; margin-bottom:15px;">Your heart list is empty!</p>
+              <button class="reward-btn" style="width:auto; padding:10px 25px;" onclick="window.location.href='../SOFT TOYS/cuddle-cove/category.html'">Go Shopping</button>
+           </div>
+        </div>
+      </div>
+
+      <!-- TAB: ADDRESSES -->
+      <div id="tab-addresses" class="tab-content">
+        <div class="header-box"><div class="icon-box"><i class="fas fa-location-dot"></i></div><div class="header-text"><h1>My Addresses</h1><p>Manage your delivery locations</p></div></div>
+        <div class="content-card">
+           <div class="grid-container" id="address-container">
+             <div class="grid-card" onclick="openModal()" style="cursor:pointer; border:2px dashed #ddd; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#888;">
+                <i class="fas fa-plus-circle" style="font-size:2rem;"></i>
+                <span font-weight="700">Add New</span>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- TAB: PAYMENTS -->
+      <div id="tab-payments" class="tab-content">
+        <div class="header-box"><div class="icon-box"><i class="far fa-credit-card"></i></div><div class="header-text"><h1>Payment Methods</h1><p>Quick and secure checkout options</p></div></div>
+        <div class="content-card">
+           <div id="payments-container" style="display:flex; flex-direction:column; gap:15px;"></div>
+           <button class="reward-btn" style="margin-top:20px; background:none; color:var(--primary); border:2px dashed var(--primary);" onclick="addMockCard()">+ Add New Card</button>
+        </div>
+      </div>
+
+      <!-- TAB: REWARDS -->
+      <div id="tab-rewards" class="tab-content">
+        <div class="header-box"><div class="icon-box"><i class="fas fa-gift"></i></div><div class="header-text"><h1>My Rewards</h1><p>Redeem your points for cuddly discounts</p></div></div>
+        <div class="content-card" style="background: linear-gradient(135deg, #1e988a, #82d1c9); color:white;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+               <div><span style="font-weight:700; opacity:0.8;">Cuddle Points</span><h2 style="font-size:3rem; font-family:'Nunito';">450</h2></div>
+               <button class="reward-btn" style="background:#fff; color:var(--primary); width:auto; padding:12px 30px;">Redeem Now</button>
+            </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ADDR MODAL -->
+  <div class="modal-overlay" id="addr-modal">
+    <div class="modal-card">
+       <h3>Add New Address</h3>
+       <form id="addr-form">
+          <div class="form-group"><label>Type</label><select id="a-type" class="form-input"><option>Home</option><option>Work</option></select></div>
+          <div class="form-group"><label>Street</label><input type="text" id="a-street" class="form-input" required></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+            <div class="form-group"><label>City</label><input type="text" id="a-city" class="form-input" required></div>
+            <div class="form-group"><label>Pin</label><input type="text" id="a-pin" class="form-input" required></div>
+          </div>
+          <button type="submit" class="reward-btn" style="margin-top:10px;">Save Address</button>
+       </form>
+       <button onclick="closeModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col"><h4>About Us</h4><ul><li><a href="#">Our Story</a></li><li><a href="#">Why Choose Us</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="track_order.html">Track Order</a></li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><p>+91 98765 43210</p><p>hello@cuddlecove.com</p></div>
+      <div class="footer-col"><h4>Follow Us</h4><div style="display:flex; gap:15px; margin-top:15px;"><i class="fab fa-youtube"></i><i class="fab fa-instagram"></i><i class="fab fa-facebook-f"></i></div></div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 Cuddle Cove. All rights reserved.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"></script>
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'sign_in.html';
+
+    async function loadProfilePic() {
+      try {
+        const db = await idb.openDB('CuddleCoveDB', 1, {
+          upgrade(db) {
+            if (!db.objectStoreNames.contains('UserData')) db.createObjectStore('UserData');
+          }
+        });
+        const imgData = await db.get('UserData', 'profile_image');
+        if (imgData) {
+          document.getElementById('side-avatar').src = imgData;
+        }
+      } catch(e) { console.log("IDB Load Error:", e); }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      const targetItem = document.querySelector(`[data-tab="${tabId}"]`);
+      if (targetItem) targetItem.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      
+      if (tabId === 'tab-wishlist') renderWishlist();
+      if (tabId === 'tab-payments') renderPayments();
+      if (tabId === 'tab-addresses') renderAddresses();
+    }
+
+    document.querySelectorAll('.menu-item[data-tab]').forEach(item => {
+      item.addEventListener('click', () => switchTab(item.dataset.tab));
+    });
+
+    document.getElementById('logout-btn').onclick = () => { localStorage.setItem('isLoggedIn', 'false'); window.location.href = 'index.html'; };
+
+    function syncUI() {
+      const user = JSON.parse(localStorage.getItem('cuddleUser')) || { name: "Ankit Kola", email: "kolaankit@gmail.com" };
+      document.getElementById('side-name').innerText = user.name;
+      document.getElementById('side-email').innerText = user.email;
+      document.getElementById('welcome-name').innerText = user.name.split(' ')[0];
+      const cart = JSON.parse(localStorage.getItem('cuddleCart')) || [];
+      document.getElementById('cart-nav-badge').innerText = cart.length;
+    }
+
+    function renderWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('cuddleWishlist')) || [];
+      const container = document.getElementById('wishlist-container');
+      const empty = document.getElementById('wish-empty');
+      container.innerHTML = '';
+      if (wishlist.length === 0) empty.style.display = 'block';
+      else {
+        empty.style.display = 'none';
+        wishlist.forEach(i => {
+           const card = document.createElement('div');
+           card.className = 'grid-card';
+           card.innerHTML = `<i class="fas fa-heart wish-remove" onclick="removeWish('${i.id}')"></i><img src="${i.img}" style="width:100%; height:100px; object-fit:contain;"><div class="item-title" style="margin-top:10px;">${i.name}</div><div style="font-weight:900; color:var(--primary);">₹${i.price}</div>`;
+           container.appendChild(card);
+        });
+      }
+      document.getElementById('over-wish-count').innerText = wishlist.length;
+    }
+
+    function removeWish(id) {
+       let wl = JSON.parse(localStorage.getItem('cuddleWishlist')) || [];
+       wl = wl.filter(x => x.id !== id);
+       localStorage.setItem('cuddleWishlist', JSON.stringify(wl));
+       renderWishlist();
+    }
+
+    function renderAddresses() {
+       const addrs = JSON.parse(localStorage.getItem('cuddleAddresses')) || [];
+       const container = document.getElementById('address-container');
+       container.querySelectorAll('.grid-card:not([onclick])').forEach(e => e.remove());
+       addrs.forEach((a, idx) => {
+         const card = document.createElement('div');
+         card.className = 'grid-card';
+         card.innerHTML = `<div style="font-weight:800; color:var(--primary); font-size:0.7rem; text-transform:uppercase; margin-bottom:10px;">${a.type}</div><p style="font-size:0.8rem; font-weight:600;">${a.street}, ${a.city}<br>${a.pin}</p><div class="item-action" style="margin-top:15px; color:#e74c3c;" onclick="removeAddr(${idx})">Remove</div>`;
+         container.insertBefore(card, container.firstChild);
+       });
+    }
+
+    function openModal() { document.getElementById('addr-modal').style.display='flex'; }
+    function closeModal() { document.getElementById('addr-modal').style.display='none'; }
+    
+    document.getElementById('addr-form').onsubmit = (e) => {
+       e.preventDefault();
+       const a = { type: document.getElementById('a-type').value, street: document.getElementById('a-street').value, city: document.getElementById('a-city').value, pin: document.getElementById('a-pin').value };
+       let all = JSON.parse(localStorage.getItem('cuddleAddresses')) || [];
+       all.push(a);
+       localStorage.setItem('cuddleAddresses', JSON.stringify(all));
+       renderAddresses();
+       closeModal();
+    };
+
+    function removeAddr(idx) {
+       let all = JSON.parse(localStorage.getItem('cuddleAddresses')) || [];
+       all.splice(idx, 1);
+       localStorage.setItem('cuddleAddresses', JSON.stringify(all));
+       renderAddresses();
+    }
+
+    function renderPayments() {
+       const pp = JSON.parse(localStorage.getItem('cuddlePayments')) || [];
+       const container = document.getElementById('payments-container');
+       container.innerHTML = '';
+       pp.forEach((p, idx) => {
+         const row = document.createElement('div');
+         row.className = 'item-row';
+         row.innerHTML = `<div class="item-info"><i class="fab fa-cc-${p.brand}" style="font-size:2rem;"></i><div><div class="item-title">**** **** **** ${p.last4}</div></div></div><div class="item-action" style="color:#e74c3c" onclick="removePay(${idx})">Delete</div>`;
+         container.appendChild(row);
+       });
+    }
+
+    function addMockCard() {
+       let pp = JSON.parse(localStorage.getItem('cuddlePayments')) || [];
+       pp.push({ brand:'visa', last4: Math.floor(1000+Math.random()*9000) });
+       localStorage.setItem('cuddlePayments', JSON.stringify(pp));
+       renderPayments();
+    }
+
+    function removePay(idx) {
+       let pp = JSON.parse(localStorage.getItem('cuddlePayments')) || [];
+       pp.splice(idx, 1);
+       localStorage.setItem('cuddlePayments', JSON.stringify(pp));
+       renderPayments();
+    }
+
+    window.onload = () => {
+      syncUI();
+      loadProfilePic();
+      renderWishlist();
+      const t = new URLSearchParams(window.location.search).get('tab');
+      if (t) switchTab(`tab-${t}`);
+    };
+  </script>
+</body>
+</html>

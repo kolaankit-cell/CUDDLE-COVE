@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | Cuddle Cove</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #1e988a;
+      --primary-light: #e5f4ef;
+      --secondary: #f9c6d0;
+      --bg: #f7fbff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --shadow: 0 4px 30px rgba(0,0,0,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text-dark); }
+    a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+    /* NAVBAR */
+    #navbar { background: var(--primary); padding: 15px 0; width: 100%; position: sticky; top: 0; z-index: 1000; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-logo img { height: 45px; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-link { color: #fff; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 20px; color: #fff; font-size: 1.2rem; }
+
+    /* SIGN UP PAGE LAYOUT */
+    .signup-container { max-width: 1100px; margin: 60px auto; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; padding: 0 20px; }
+
+    /* LEFT SIDE */
+    .welcome-side { text-align: left; }
+    .welcome-tag { color: var(--primary); font-weight: 800; font-size: 1rem; margin-bottom: 5px; display: block; }
+    .welcome-tag::before, .welcome-tag::after { content: ' ✨ '; }
+    .sign-up-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 4rem; color: var(--primary); margin-bottom: 20px; }
+    .sign-up-desc { color: var(--text-muted); font-size: 1.1rem; font-weight: 700; line-height: 1.6; margin-bottom: 40px; }
+    .plushie-img { width: 100%; max-width: 500px; }
+
+    /* RIGHT SIDE: CARD */
+    .signup-card { background: #fff; border-radius: 25px; padding: 40px 50px; box-shadow: var(--shadow); position: relative; }
+    .card-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 25px; }
+    
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 12px 20px; border: 2px solid #e2e8f0; border-radius: 15px; font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.3s; }
+    .form-input:focus { border-color: var(--primary); }
+    
+    .login-link { text-align: center; font-size: 0.85rem; font-weight: 800; margin-bottom: 25px; color: #64748b; }
+    .login-link a { color: var(--primary); }
+
+    .signup-btn { width: 100%; background: #0b5e58; color: #fff; padding: 18px; border: none; border-radius: 15px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+    .signup-btn:hover { background: #084a45; }
+
+    .divider { text-align: center; margin: 25px 0; position: relative; color: #94a3b8; font-size: 0.8rem; font-weight: 700; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: #e2e8f0; }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .social-btns { display: flex; gap: 15px; }
+    .social-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .social-btn img { width: 20px; }
+
+    /* NEW TRUST FOOTER */
+    .trust-footer { display: flex; justify-content: space-around; padding: 60px 0; background: #fff; margin-top: 50px; border-top: 1px solid #eee; }
+    .trust-item { display: flex; align-items: center; gap: 15px; max-width: 250px; }
+    .trust-icon { width: 60px; height: 60px; flex-shrink: 0; }
+    .trust-title { font-weight: 800; font-size: 1rem; margin-bottom: 3px; }
+    .trust-desc { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; line-height: 1.4; }
+
+    /* SITE FOOTER */
+    .site-footer { background: #8cd4cd; padding: 60px 20px; text-align: left; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    .footer-col h4 { font-family: 'Nunito', sans-serif; font-weight: 800; margin-bottom: 20px; }
+    .footer-col ul li { list-style: none; margin-bottom: 10px; font-size: 0.85rem; font-weight: 600; color: #333; }
+    .footer-col p { font-size: 0.85rem; color: #333; line-height: 1.8; }
+    .footer-bottom { text-align: center; margin-top: 50px; font-size: 0.8rem; font-weight: 700; opacity: 0.8; }
+
+    @media (max-width: 900px) {
+      .signup-container { grid-template-columns: 1fr; text-align: center; }
+      .trust-footer { flex-direction: column; gap: 30px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="nav-icon-btn"><i class="fas fa-search"></i></div>
+        <div class="nav-icon-btn"><i class="far fa-heart"></i></div>
+        <div class="nav-icon-btn" onclick="window.location.href='sign_in.html'"><i class="fas fa-user"></i></div>
+        <div class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="signup-container">
+    
+    <!-- LEFT SIDE -->
+    <div class="welcome-side">
+      <span class="welcome-tag">Join the Cuddle Cove Family!</span>
+      <h1 class="sign-up-title">Sign Up</h1>
+      <p class="sign-up-desc">
+        Create an account and start your <br>
+        journey of joy and cuddles. 💗
+      </p>
+      <img src="https://img.freepik.com/free-photo/cute-teddy-bear-stuffed-animal-white-background_23-2150821631.jpg" class="plushie-img" alt="Sign Up Banner">
+    </div>
+
+    <!-- RIGHT SIDE: FORM CARD -->
+    <div class="signup-card">
+      <h2 class="card-title">🔐 Sign in to Your Account</h2> <!-- Matching screenshot exactly -->
+      
+      <form id="signup-form">
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" id="signup-name" class="form-input" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="signup-email" class="form-input" placeholder="Enter your email address" required>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="signup-phone" class="form-input" placeholder="Enter your phone number" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signup-pass" class="form-input" placeholder="Create a password" required>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="signup-confirm" class="form-input" placeholder="Confirm your password" required>
+        </div>
+        
+        <p class="login-link">
+          Already have an account? <a href="sign_in.html">Sign In 🔑</a>
+        </p>
+        
+        <button type="submit" class="signup-btn">Sign Up &rarr;</button>
+      </form>
+
+      <script>
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const name = document.getElementById('signup-name').value;
+          const email = document.getElementById('signup-email').value;
+          const phone = document.getElementById('signup-phone').value;
+          const pass = document.getElementById('signup-pass').value;
+          const confirm = document.getElementById('signup-confirm').value;
+
+          if (pass !== confirm) {
+            alert('Passwords do not match!');
+            return;
+          }
+
+          const userData = { name, email, phone, pass };
+          localStorage.setItem('cuddleUser', JSON.stringify(userData));
+          alert('Registration successful! Please sign in.');
+          window.location.href = 'sign_in.html';
+        });
+      </script>
+      
+      <div class="divider">or continue with</div>
+      
+      <div class="social-btns">
+        <div class="social-btn">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+          Google
+        </div>
+        <div class="social-btn">
+          <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook">
+          facebook
+        </div>
+        <div class="social-btn">
+          <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple">
+          apple
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- UPDATED TRUST BADGES FOR SIGN UP -->
+  <section class="trust-footer">
+    <div class="trust-item">
+      <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" alt="Offers" class="trust-icon">
+      <div>
+        <p class="trust-title">Exclusive Offers</p>
+        <p class="trust-desc">Get access to special offers and discounts.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Wishlist" class="trust-icon">
+      <div>
+        <p class="trust-title">Wishlist</p>
+        <p class="trust-desc">Save your favorite toys in one place.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <img src="https://cdn-icons-png.flaticon.com/512/7518/7518532.png" alt="Checkout" class="trust-icon">
+      <div>
+        <p class="trust-title">Faster Checkout</p>
+        <p class="trust-desc">Enjoy a smooth and quick checkout.</p>
+      </div>
+    </div>
+    <div class="trust-item">
+      <img src="https://cdn-icons-png.flaticon.com/512/3200/3200832.png" alt="Rewards" class="trust-icon">
+      <div>
+        <p class="trust-title">Cuddle Rewards</p>
+        <p class="trust-desc">Earn points and enjoy rewarding benefits.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul>
+          <li>Our Story</li>
+          <li>Why Choose Us</li>
+          <li>Customer Reviews</li>
+          <li>Blog</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li>Help Center</li>
+          <li>Shipping & Delivery</li>
+          <li>Returns & Refunds</li>
+          <li>Track Order</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4 style="font-size:0.75rem;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div style="display:flex; background:#fff; border-radius:30px; padding:5px; border:1px solid #ccc; margin-top:15px;">
+           <input type="text" style="border:none;flex:1;padding:5px 15px;outline:none;">
+           <button style="background:none;border:none;color:var(--primary);cursor:pointer;padding-right:15px;"><i class="fas fa-search"></i></button>
+        </div>
+        <p style="margin-top:20px; font-weight:700; font-size:0.8rem;">FIND US ON</p>
+        <div style="display:flex; gap:15px; margin-top:15px;">
+           <i class="fab fa-youtube"></i>
+           <i class="fab fa-twitter"></i>
+           <i class="fab fa-instagram"></i>
+           <i class="fab fa-facebook"></i>
+           <i class="fab fa-linkedin"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 Cuddle Cove. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

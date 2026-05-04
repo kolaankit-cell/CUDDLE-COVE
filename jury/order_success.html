@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — Cuddle Cove</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #fcfdfd;
+      color: #333;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    /* FIRE CRACKER / SPARKLE ANIMATIONS */
+    .sparkle {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background: #8cd4cd;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      opacity: 0;
+      animation: sparkle-anim 2s infinite;
+    }
+    .s1 { top: -10px; left: -10px; animation-delay: 0.1s; background: #f9c6d0; }
+    .s2 { top: -20px; right: 0; animation-delay: 0.5s; background: #1e988a; }
+    .s3 { bottom: 0; right: -20px; animation-delay: 0.8s; background: #8cd4cd; }
+    .s4 { bottom: -10px; left: 10px; animation-delay: 1.2s; background: #fbd6da; }
+
+    @keyframes sparkle-anim {
+      0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+      50% { transform: scale(1) rotate(180deg); opacity: 1; }
+    }
+
+    #navbar {
+      background: #1e988a !important;
+      padding: 12px 0 !important;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-links { display: flex; gap: 25px; }
+    .nav-link { color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+    .nav-actions { display: flex; gap: 15px; color: #fff; }
+    .logo-bear { background: #f9c6d0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+    .success-container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .success-icon-box {
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .success-icon-box img {
+      width: 180px;
+      height: auto;
+    }
+
+    .success-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 2.8rem;
+      color: #1a3a38;
+      margin-bottom: 30px;
+      line-height: 1.2;
+    }
+    .success-subtitle {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 60px;
+    }
+
+    /* Order Details */
+    .order-summary-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 60px;
+      text-align: left;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.03);
+    }
+    .summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .summary-item {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      position: relative;
+    }
+    .summary-item img {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      background: #fdfdfd;
+      object-fit: contain;
+    }
+    .summary-item-info { flex: 1; }
+    .summary-item-name { font-family:'Nunito'; font-weight: 800; font-size: 1.1rem; margin-bottom: 4px; }
+    .summary-item-sub { font-size: 0.8rem; color: #888; }
+    .summary-item-price { font-weight: 800; font-size: 1.2rem; margin-top: 10px; }
+    .summary-item-qty { position: absolute; right: 0; bottom: 0; font-size: 0.8rem; font-weight: 700; color: #888; }
+
+    .total-row {
+      border-top: 1px solid #eee;
+      padding-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .total-label {
+      font-family:'Nunito'; font-weight: 800; font-size: 1.1rem;
+    }
+    .total-amount {
+      font-family:'Nunito'; font-weight: 900; font-size: 2.2rem; margin-top: 5px;
+    }
+
+    /* What's Next Section */
+    .whats-next {
+      margin-bottom: 60px;
+    }
+    .whats-next h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.8rem;
+      margin-bottom: 40px;
+    }
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 30px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: 1;
+    }
+    .timeline-step {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+      z-index: 2;
+    }
+    .timeline-icon {
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border: 2px solid #e0e0e0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #999;
+      transition: all 0.3s;
+    }
+    .timeline-step.active .timeline-icon {
+      border-color: #1e988a;
+      color: #1e988a;
+      box-shadow: 0 4px 15px rgba(30,152,138,0.2);
+    }
+    .timeline-label { font-weight: 800; font-size: 1rem; color: #333; }
+    .timeline-sub { font-size: 0.8rem; color: #888; font-weight: 600; line-height: 1.4; }
+
+    /* DELIVERY CARD */
+    .delivery-status-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-top: 30px;
+      text-align: left;
+    }
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .card-header-row h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #1a3a38;
+      margin: 0;
+    }
+    .delivery-info-box {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .delivery-info-box i {
+      color: #1e988a;
+      font-size: 1.2rem;
+      margin-top: 3px;
+    }
+    .delivery-details .user-name {
+      display: block;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #1a3a38;
+      margin-bottom: 4px;
+    }
+    .delivery-details .user-addr {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .est-delivery-row {
+      margin-bottom: 20px;
+    }
+    .est-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .est-date {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #1e988a;
+    }
+    .est-time {
+      font-size: 0.8rem;
+      color: #888;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .safe-hands-msg {
+      background: #f0f9f8;
+      padding: 15px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .safe-hands-msg i {
+      color: #4b8b86;
+      font-size: 1.2rem;
+    }
+    .safe-hands-msg p {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4b8b86;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Buttons */
+    .action-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 60px;
+    }
+    .btn-primary {
+      background: #1e988a;
+      color: #fff;
+      padding: 15px 40px;
+      border-radius: 99px;
+      font-weight: 800;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .btn-secondary {
+      background: #fff;
+      color: #1e988a;
+      padding: 15px 40px;
+      border-radius: 99px;
+      font-weight: 800;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border: 2px solid #1e988a;
+      transition: background 0.2s;
+    }
+
+    /* Footer */
+    .site-footer { background: #8cd4cd !important; padding: 40px 20px 20px !important; margin-top: 80px; }
+    .footer-col h4 { font-family: 'Quicksand', sans-serif; font-weight: 700; color: #000 !important; margin-bottom: 15px; }
+
+    @media (max-width: 600px) {
+      .success-title { font-size: 2rem; }
+      .timeline { flex-direction: column; gap: 40px; align-items: center; }
+      .timeline::before { display: none; }
+      .timeline-step { width: 100%; }
+      .action-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo" style="height: 50px; border-radius: 50%;">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-icon-btn"><i class="fas fa-search"></i></button>
+        <button class="nav-icon-btn"><i class="fas fa-heart"></i></button>
+        <a href="track_order.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a href="payment_cart.html" class="nav-icon-btn"><i class="fas fa-shopping-cart"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="success-container">
+    <div class="success-icon-box" style="position: relative;">
+      <div class="sparkle s1"></div>
+      <div class="sparkle s2"></div>
+      <div class="sparkle s3"></div>
+      <div class="sparkle s4"></div>
+      <img src="LOGO/logo.png" alt="Success Logo" style="width: 150px; border-radius: 50%;">
+    </div>
+    
+    <h1 class="success-title">Yay! Your Order is<br>Confirmed! 🥳🎉</h1>
+    <p class="success-subtitle">
+      Thank you for shopping with Cuddle Cove 💜<br>
+      A confirmation has been sent to your email.
+    </p>
+
+    <!-- CENTERED SUMMARY -->
+    <div class="order-summary-box">
+      <div class="summary-list" id="final-summary-list">
+        <!-- Items pulled from session -->
+      </div>
+      
+      <div class="total-row">
+        <div>
+           <div class="total-label">Total Amount</div>
+           <div style="font-size: 0.7rem; color: #888;">(Incl. of all taxes)</div>
+        </div>
+        <div class="total-amount" id="final-total">₹1,498</div>
+      </div>
+
+      <!-- DELIVERY ADDRESS CARD -->
+      <div class="delivery-status-card">
+        <div class="card-header-row">
+          <h3>Delivery Address</h3>
+        </div>
+        
+        <div class="delivery-info-box">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="delivery-details">
+            <span class="user-name" id="display-name">Rahul Sharma</span>
+            <div class="user-addr" id="display-address">
+              123, Green Park, South Extension<br>
+              New Delhi - 110016, Delhi<br>
+              +91 98765 43210
+            </div>
+          </div>
+        </div>
+
+        <div class="est-delivery-row">
+          <div class="est-label">
+            <i class="far fa-calendar-alt"></i>
+            Estimated Delivery
+          </div>
+          <div class="est-date" id="display-est-date">Today, 4 May 2026</div>
+          <div class="est-time">by 8:00 PM</div>
+        </div>
+
+        <div class="safe-hands-msg">
+          <i class="fas fa-shield-alt"></i>
+          <p>Your order is in safe hands! We'll update you at every step.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT'S NEXT -->
+    <section class="whats-next">
+      <h3>What's Next?</h3>
+      <div class="timeline">
+        <div class="timeline-step active">
+          <div class="timeline-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="timeline-label">Order Confirmed</div>
+          <div class="timeline-sub">We've received your order.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon"><i class="fas fa-box"></i></div>
+          <div class="timeline-label">Being Packed</div>
+          <div class="timeline-sub">Your order is being packed.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon"><i class="fas fa-truck"></i></div>
+          <div class="timeline-label">On The Way</div>
+          <div class="timeline-sub">Your order is on the way!</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="action-group">
+      <a href="../SOFT TOYS/cuddle-cove/category.html" class="btn-primary">CONTINUE SHOPPING</a>
+      <a href="track_order.html" class="btn-secondary">TRACK ORDER</a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+      <div class="footer-col" style="text-align: left;">
+        <h4>About Us</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+          <li><a href="#">Customer Reviews</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4>Support</h4>
+        <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Shipping & Delivery</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4>Contact</h4>
+        <p>+91 XXXXX XXXXX</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col" style="text-align: left;">
+        <h4 style="font-size: 0.75rem; letter-spacing: 1px; color: #333 !important;">SIGN UP FOR OUR NEWSLETTER</h4>
+        <div style="display:flex; margin-top:10px; background:#fff; border-radius:30px; overflow:hidden; padding:2px; border:1px solid #ccc; max-width:300px;">
+          <input type="text" style="flex:1; border:none; padding:8px 15px; outline:none;">
+          <button style="background:none; border:none; padding:0 15px; cursor:pointer; color:#1e988a;"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function renderFinal() {
+      const items = JSON.parse(localStorage.getItem('cuddleCart')) || [];
+      const list = document.getElementById('final-summary-list');
+      const totalEl = document.getElementById('final-total');
+      
+      let subtotal = 0;
+      
+      items.forEach(item => {
+        subtotal += item.price * item.qty;
+        const displayImg = item.img ? item.img.replace('../../jury/', '') : '';
+
+        const el = document.createElement('div');
+        el.className = 'summary-item';
+        el.innerHTML = `
+          <img src="${displayImg}" alt="${item.name}">
+          <div class="summary-item-info">
+            <div class="summary-item-name">${item.name}</div>
+            <div class="summary-item-sub">${item.subtext}</div>
+            <div class="summary-item-price">₹${item.price.toLocaleString()}</div>
+          </div>
+          <div class="summary-item-qty">Qty ${item.qty}</div>
+        `;
+        list.appendChild(el);
+      });
+
+      const discount = items.length > 0 ? 448 : 0;
+      const total = Math.max(0, subtotal - discount);
+      totalEl.innerText = `₹${total.toLocaleString()}`;
+
+      // Populate Address Info
+      const info = JSON.parse(localStorage.getItem('cuddleOrderInfo')) || {
+        name: 'Rahul Sharma',
+        address: '123, Green Park, South Extension',
+        city: 'New Delhi',
+        pincode: '110016',
+        state: 'Delhi',
+        phone: '+91 98765 43210',
+        date: new Date().toLocaleDateString()
+      };
+
+      document.getElementById('display-name').innerText = info.name;
+      document.getElementById('display-address').innerHTML = `
+        ${info.address}<br>
+        ${info.city} - ${info.pincode}, ${info.state}<br>
+        ${info.phone}
+      `;
+
+      // Set estimate date (3 days from order)
+      const est = new Date();
+      est.setDate(est.getDate() + 3);
+      document.getElementById('display-est-date').innerText = est.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      // Confetti Burst
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#1e988a', '#f9c6d0', '#8cd4cd', '#ffffff']
+      });
+    }
+    renderFinal();
+  </script>
+</body>
+</html>

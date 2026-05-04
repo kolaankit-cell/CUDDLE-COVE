@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings | Cuddle Cove</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #1e988a;
+      --primary-light: #e5f4ef;
+      --primary-dark: #166e64;
+      --secondary: #f9c6d0;
+      --bg: #f5fafd;
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border: #edf2f7;
+      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; transition: 0.3s; }
+    ul { list-style: none; }
+
+    /* NAVBAR */
+    #navbar { background: var(--primary); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+    .nav-logo img { height: 45px; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-link { color: #fff; font-weight: 600; font-size: 0.95rem; }
+    .nav-link:hover { opacity: 0.8; }
+    .nav-actions { display: flex; gap: 20px; color: #fff; font-size: 1.2rem; align-items: center; }
+    .nav-icon-btn { cursor: pointer; position: relative; }
+    .cart-badge { position: absolute; top: -8px; right: -10px; background: #e74c3c; color: #fff; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; font-weight: 700; }
+
+    /* LAYOUT */
+    .profile-container { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: 280px 1fr; gap: 30px; padding: 0 20px; }
+
+    /* SIDEBAR (SAME AS PROFILE) */
+    .sidebar { display: flex; flex-direction: column; gap: 25px; }
+    .user-card { background: var(--card-bg); border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .user-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 80px; background: var(--primary-light); z-index: 0; }
+    .profile-img-wrap { position: relative; z-index: 1; margin-bottom: 15px; }
+    .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #fff; object-fit: cover; background: #eee; }
+    .camera-overlay { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; border-radius: 50%; background: rgba(0,0,0,0.4); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; opacity: 0; transition: 0.3s; }
+    .profile-img-wrap:hover .camera-overlay { opacity: 1; }
+    .user-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; }
+    .user-email { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; }
+    .premium-badge { background: #fff5e6; color: #d68910; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #fbeeb8; }
+
+    .sidebar-menu { background: var(--card-bg); border-radius: 20px; padding: 15px 0; box-shadow: var(--shadow); }
+    .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 25px; font-size: 0.9rem; font-weight: 600; color: #667085; border-left: 4px solid transparent; transition: 0.2s; cursor: pointer; }
+    .menu-item i { font-size: 1.1rem; width: 20px; text-align: center; }
+    .menu-item:hover { background: #f8fafc; color: var(--primary); }
+    .menu-item.active { background: var(--primary); color: #fff; border-left-color: var(--primary-dark); }
+
+    .reward-card { background: var(--card-bg); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); }
+    .piggy-icon { width: 60px; margin-bottom: 10px; }
+    .reward-points { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.8rem; color: var(--text-dark); margin: 5px 0; }
+    .reward-btn { background: var(--primary); color: #fff; padding: 10px; width: 100%; border-radius: 12px; font-weight: 700; font-size: 0.85rem; border: none; margin-top: 15px; cursor: pointer; }
+
+    /* MAIN CONTENT */
+    .main-content { display: flex; flex-direction: column; gap: 25px; }
+    .settings-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; position: relative; }
+    .settings-header .bear-img { position: absolute; right: 0; top: -50px; width: 180px; }
+    .settings-icon-box { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .header-text h1 { font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 800; }
+    .header-text p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .settings-card { background: var(--card-bg); border-radius: 20px; padding: 30px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    .card-header i { color: var(--primary); font-size: 1.1rem; }
+    .card-header h2 { font-size: 1rem; font-weight: 800; flex: 1; }
+    .edit-link { color: var(--primary); font-size: 0.75rem; font-weight: 700; border: none; background: none; cursor: pointer; }
+
+    /* FORMS */
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
+    .form-input { border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 12px; font-family: inherit; font-size: 0.85rem; background: #fcfdfe; color: var(--text-dark); outline: none; }
+    .form-input:focus { border-color: var(--primary); }
+
+    /* TOGGLE SWITCH */
+    .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f8fafc; }
+    .settings-row:last-child { border-bottom: none; }
+    .row-info h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 3px; }
+    .row-info p { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    
+    .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e2e8f0; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .action-link { font-size: 0.8rem; font-weight: 800; color: var(--primary); cursor: pointer; }
+    .danger-link { color: #e74c3c; cursor: pointer; font-size: 0.8rem; font-weight: 800; }
+    .chevron-link { color: var(--text-muted); cursor: pointer; }
+
+    /* FOOTER (SAME AS PROFILE) */
+    .site-footer { background: #8cd4cd; padding: 60px 0 30px; margin-top: 50px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; padding: 0 20px; }
+    .footer-col h4 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 20px; color: #000; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { font-size: 0.85rem; font-weight: 600; color: #333; }
+    .footer-bottom { text-align: center; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 40px; padding-top: 20px; font-size: 0.75rem; }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <img src="LOGO/logo.png" alt="Cuddle Cove Logo">
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="3D_GAME/sample.ios/dw.html" class="nav-link">Explore</a>
+        <a href="../SOFT TOYS/cuddle-cove/category.html" class="nav-link">Shop</a>
+        <a href="index.html#new-animal" class="nav-link">New Arrival</a>
+        <a href="about_us.html" class="nav-link">About us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="nav-icon-btn"><i class="fas fa-search"></i></div>
+        <div class="nav-icon-btn"><i class="far fa-heart"></i></div>
+        <a id="user-nav-link" href="user_profile.html" class="nav-icon-btn"><i class="fas fa-user"></i></a>
+        <a id="cart-nav-link" href="payment_cart.html" class="nav-icon-btn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge">3</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="user-card">
+        <div class="profile-img-wrap">
+          <label for="profile-upload" style="cursor: pointer; position: relative; display: block;">
+            <img src="images/_ANK8048.JPG" alt="User Profile" class="profile-img" id="user-avatar">
+            <div class="camera-overlay"><i class="fas fa-camera"></i></div>
+          </label>
+          <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+        </div>
+        <h2 class="user-name">Ankit Kola</h2>
+        <p class="user-email">kolaankit@gmail.com</p>
+        <div class="premium-badge"><i class="fas fa-crown"></i> Premium Member</div>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="menu-item" onclick="window.location.href='user_profile.html'"><i class="far fa-user"></i> My Profile</li>
+        <li class="menu-item"><i class="fas fa-box"></i> My Orders</li>
+        <li class="menu-item" onclick="window.location.href='track_order.html'"><i class="fas fa-truck-fast"></i> Track Order</li>
+        <li class="menu-item"><i class="far fa-heart"></i> My Wishlist</li>
+        <li class="menu-item"><i class="fas fa-location-dot"></i> My Addresses</li>
+        <li class="menu-item"><i class="far fa-credit-card"></i> Payment Methods</li>
+        <li class="menu-item"><i class="fas fa-gift"></i> My Rewards</li>
+        <li class="menu-item"><i class="far fa-bell"></i> Notifications</li>
+        <li class="menu-item active"><i class="fas fa-gear"></i> Account Settings</li>
+        <li class="menu-item"><i class="far fa-circle-question"></i> Help & Support</li>
+        <li class="menu-item" id="logout-btn"><i class="fas fa-arrow-right-from-bracket"></i> Logout</li>
+      </ul>
+
+      <div class="reward-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3200/3200832.png" alt="Piggy" class="piggy-icon">
+        <p style="font-size: 0.75rem; font-weight: 700; color: #888;">You have</p>
+        <p class="reward-points">320</p>
+        <p style="font-size: 0.75rem; font-weight: 800; color: #888;">Reward Points</p>
+        <button class="reward-btn" onclick="window.location.href='user_profile.html?tab=rewards'">View Rewards &rarr;</button>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <main class="main-content">
+      <div class="settings-header">
+        <div class="settings-icon-box"><i class="fas fa-gear"></i></div>
+        <div class="header-text">
+          <h1>Account Settings</h1>
+          <p>Manage your account preferences and security settings</p>
+        </div>
+        <img src="images/teddy_bear_bow.png" alt="Bear" class="bear-img">
+      </div>
+
+      <!-- PROFILE INFO -->
+      <div class="settings-card">
+        <div class="card-header">
+          <i class="far fa-user"></i>
+          <h2>Profile Information</h2>
+        </div>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" value="Ankit Kola" class="form-input" id="profile-name">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" value="1998-03-12" class="form-input" id="profile-dob">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" value="kolaankit@gmail.com" class="form-input" id="profile-email">
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select class="form-input" id="profile-gender">
+              <option>Female</option>
+              <option selected>Male</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" value="+91 98765 43210" class="form-input" id="profile-phone">
+          </div>
+          <div class="form-group">
+            <label>Member Since</label>
+            <input type="text" value="15 January 2024" class="form-input" readonly style="background: #f1f5f9;">
+          </div>
+        </div>
+        <button id="save-profile-btn" style="margin-top:25px; background:var(--primary); color:#fff; border:none; padding:12px 30px; border-radius:12px; font-weight:700; cursor:pointer; font-family:inherit;">Save Changes</button>
+      </div>
+
+      <!-- PASSWORD & SECURITY -->
+      <div class="settings-card">
+        <div class="card-header">
+          <i class="fas fa-shield-halved"></i>
+          <h2>Password & Security</h2>
+          <span class="action-link">Change Password</span>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3>Password</h3>
+            <p>••••••••</p>
+          </div>
+          <span class="action-link">Change</span>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3>Two-Factor Authentication</h3>
+            <p>Add an extra layer of security to your account.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3>Login Alerts</h3>
+            <p>Get notified about new logins to your account.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3>Trusted Devices</h3>
+            <p>Manage devices that can access your account.</p>
+          </div>
+          <i class="fas fa-chevron-right chevron-link"></i>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="settings-card">
+        <div class="card-header">
+          <i class="far fa-bell"></i>
+          <h2>Notification Preferences</h2>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-box-open" style="font-size: 0.8rem; color: #94a3b8;"></i> Order Updates</h3>
+            <p>Receive notifications about your orders and deliveries.</p>
+          </div>
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-bullhorn" style="font-size: 0.8rem; color: #94a3b8;"></i> Promotions & Offers</h3>
+            <p>Get updates on exclusive offers and discounts.</p>
+          </div>
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-star" style="font-size: 0.8rem; color: #94a3b8;"></i> New Arrivals</h3>
+            <p>Be the first to know about new cuddly additions.</p>
+          </div>
+          <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <!-- PRIVACY & DATA -->
+      <div class="settings-card">
+        <div class="card-header">
+          <i class="fas fa-user-shield"></i>
+          <h2>Privacy & Data</h2>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-low-vision" style="font-size: 0.8rem; color: #94a3b8;"></i> Profile Visibility</h3>
+            <p>Choose who can see your profile information.</p>
+          </div>
+          <select style="border: none; background: none; font-weight: 800; color: var(--primary); font-family: inherit; font-size: 0.8rem;">
+            <option>Only Me</option>
+            <option>Friends</option>
+            <option>Public</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-database" style="font-size: 0.8rem; color: #94a3b8;"></i> Data & Privacy</h3>
+            <p>Manage how your data is used and stored.</p>
+          </div>
+          <i class="fas fa-chevron-right chevron-link"></i>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px; color: #e74c3c;"><i class="fas fa-trash-can" style="font-size: 0.8rem;"></i> Delete Account</h3>
+            <p>Permanently delete your account and all data.</p>
+          </div>
+          <i class="fas fa-chevron-right danger-link"></i>
+        </div>
+      </div>
+
+      <!-- PREFERENCES -->
+      <div class="settings-card">
+        <div class="card-header">
+          <i class="fas fa-sliders"></i>
+          <h2>Preferences</h2>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-globe" style="font-size: 0.8rem; color: #94a3b8;"></i> Language</h3>
+            <p>Select your preferred language.</p>
+          </div>
+          <select style="border: none; background: none; font-weight: 800; color: var(--primary); font-family: inherit; font-size: 0.8rem;">
+            <option>English</option>
+            <option>Hindi</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="row-info">
+            <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-indian-rupee-sign" style="font-size: 0.8rem; color: #94a3b8;"></i> Currency</h3>
+            <p>Select your preferred currency.</p>
+          </div>
+          <select style="border: none; background: none; font-weight: 800; color: var(--primary); font-family: inherit; font-size: 0.8rem;">
+            <option>INR (₹)</option>
+            <option>USD ($)</option>
+          </select>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>About Us</h4>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Why Choose Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="track_order.html">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+91 98765 43210</p>
+        <p>hello@cuddlecove.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div style="display: flex; gap: 15px; margin-top: 15px;">
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 Cuddle Cove. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // SHARED LOGIC FROM PROFILE
+    const DB_NAME = 'CuddleCoveDB';
+    const STORE_NAME = 'UserData';
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+        };
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function getFromIDB(key) {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(key);
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function saveToIDB(key, value) {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        store.put(value, key);
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const savedUser = JSON.parse(localStorage.getItem('cuddleUser'));
+
+      if (!isLoggedIn || !savedUser) {
+        window.location.href = 'sign_in.html';
+        return;
+      }
+
+      // Sync Header
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('user-nav-link').href = 'user_profile.html';
+      }
+
+      // Populate User Info
+      document.querySelectorAll('.user-name').forEach(el => el.textContent = savedUser.name);
+      document.querySelectorAll('.user-email').forEach(el => el.textContent = savedUser.email);
+      
+      document.getElementById('profile-name').value = savedUser.name || '';
+      document.getElementById('profile-email').value = savedUser.email || '';
+      document.getElementById('profile-phone').value = savedUser.phone || '';
+      document.getElementById('profile-dob').value = savedUser.dob || '';
+      document.getElementById('profile-gender').value = savedUser.gender || 'Male';
+
+      // Load Profile Pic
+      const pic = await getFromIDB('profile_image');
+      if (pic) document.getElementById('user-avatar').src = pic;
+
+      // Handle Upload
+      document.getElementById('profile-upload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = async (ev) => {
+            document.getElementById('user-avatar').src = ev.target.result;
+            await saveToIDB('profile_image', ev.target.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Handle Save Changes
+      const saveBtn = document.getElementById('save-profile-btn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          const updatedName = document.getElementById('profile-name').value;
+          const updatedEmail = document.getElementById('profile-email').value;
+          const updatedPhone = document.getElementById('profile-phone').value;
+          const updatedDob = document.getElementById('profile-dob').value;
+          const updatedGender = document.getElementById('profile-gender').value;
+
+          if (updatedName && updatedEmail && updatedPhone) {
+            // Update savedUser object
+            savedUser.name = updatedName;
+            savedUser.email = updatedEmail;
+            savedUser.phone = updatedPhone;
+            savedUser.dob = updatedDob;
+            savedUser.gender = updatedGender;
+            
+            // Persist to localStorage
+            localStorage.setItem('cuddleUser', JSON.stringify(savedUser));
+            
+            // Update Header/Sidebar UI
+            document.querySelectorAll('.user-name').forEach(el => el.textContent = updatedName);
+            document.querySelectorAll('.user-email').forEach(el => el.textContent = updatedEmail);
+            
+            alert('Profile updated successfully! ✨');
+          } else {
+            alert('Please fill in all the required fields.');
+          }
+        });
+      }
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = 'sign_in.html';
+      });
+    });
+  </script>
+
+</body>
+</html>
